@@ -1,0 +1,1577 @@
+/*
+ * ZeitMeister — German Time Trainer
+ * Main stylesheet
+ *
+ * Sections below are kept in one file so the project stays simple to edit.
+ */
+
+/* ============================================================
+   1. THEME & GLOBAL RESET
+   ============================================================ */
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f3ec;--fg:#1d2433;--card:#fff;--accent:#d9482b;--muted:#6b7280;--cover:#1d2433;--coverfg:#f6f3ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#eceae4;--coverfg:#14171f}}
+:root[data-theme="dark"]{--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#e8e5df;--coverfg:#14171f}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{overflow-x:hidden}
+button,input{-webkit-appearance:none;appearance:none}
+body.modal-open{overflow:hidden}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px max(20px,env(safe-area-inset-right,0px)) 20px max(20px,env(safe-area-inset-left,0px))}
+.wrap{display:flex;flex-wrap:wrap;flex-direction:row-reverse;direction:ltr;gap:30px;align-items:center;justify-content:center;max-width:940px;width:100%}
+.brandbar{
+  width:min(980px,100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:0 0 14px;
+  padding:0 52px;
+  direction:ltr;
+  text-align:left;
+}
+.brandmark{width:56px;height:56px;flex:0 0 auto;display:block}
+.brandcopy{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.brandname{font-size:clamp(1.35rem,3.1vw,2rem);font-weight:800;letter-spacing:-.035em;line-height:1}
+.brandname .zeit{color:var(--fg)}
+.brandname .meister{color:var(--accent)}
+.brandtag{margin-top:5px;color:var(--muted);font-size:.7rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;line-height:1}
+/* ============================================================
+   5. MOBILE / TABLET RESPONSIVE LAYOUT
+   ============================================================ */
+@media (max-width:640px){
+.tip{display:none}
+.sum{margin:0}
+:root{--cw:min(44vw,172px)}
+body{align-items:flex-start;justify-content:flex-start;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));min-height:100vh;min-height:100svh;min-height:100dvh}
+.wrap{flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:10px}
+.side{display:flex;flex-direction:column;align-items:stretch;min-width:0;flex:0 1 auto}
+.clock{width:var(--cw);margin:0 auto;padding:8px 0 4px;order:-2}
+.clock svg{filter:none}
+.answer{order:-2;min-height:64px;padding:12px 14px;box-shadow:none;margin-bottom:2px}
+.side h1{order:-1;font-size:1.05rem;margin:4px 0 0}
+.side .hint{margin:0}
+.answer .de{font-size:1.25rem}
+.cover{font-size:.95rem}
+.hint{font-size:.82rem}
+.seg{align-self:center;margin:0}
+.seg button{padding:7px 12px;font-size:.92rem}
+.rl{margin:0;align-self:center}
+.btn{margin-top:0;align-self:center;min-height:44px}
+.typebox,.extras,#rev{margin-top:0}
+.toggles{margin:0}
+.chips{margin:14px 0 0}
+.mini{align-self:center;margin:0}
+.typebox .btn{margin-top:8px}
+}
+
+/* ============================================================
+   2. MAIN LAYOUT & CLOCK
+   ============================================================ */
+.clock{width:min(360px,80vw);cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.clock[tabindex],.answer[tabindex],.opt[tabindex]{outline:none}
+.clock[tabindex]:focus-visible,.answer[tabindex]:focus-visible,.opt[tabindex]:focus-visible{box-shadow:0 0 0 3px var(--accent),0 0 0 6px var(--bg)}
+.clock svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
+.side{flex:1 1 560px;min-width:240px;text-align:center}
+h1{font-size:1.15rem;margin:0 0 6px}
+.hint{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+.tip-mobile{display:none}
+/* ============================================================
+   3. PRACTICE UI & CONTROLS
+   ============================================================ */
+.answer{position:relative;touch-action:manipulation;background:var(--card);border-radius:16px;padding:26px 18px;min-height:96px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;border:2px solid var(--accent)}
+.answer .de{font-size:1.55rem;font-weight:700;direction:ltr;line-height:1.3}
+.cover{position:absolute;inset:0;background:var(--cover);color:var(--coverfg);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:opacity .3s}
+.answer.open .cover{opacity:0;pointer-events:none}
+.seg{display:inline-flex;border:1px solid var(--muted);border-radius:999px;overflow:hidden;margin:0 4px 12px}
+.seg button{background:none;border:0;touch-action:manipulation;color:var(--fg);padding:8px 16px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff}
+.typebox{margin-top:14px}
+.typebox input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--muted);background:var(--card);color:var(--fg);font:inherit;font-size:1.1rem;direction:ltr;text-align:left}
+.typebox input:focus{outline:none;border-color:var(--accent)}
+.typebox .extras{margin-top:12px;text-align:center;font-size:.92rem;line-height:1.9;color:var(--muted)}
+.extras b{color:var(--fg)}
+/* Reverse answer choices */
+.opts{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.opt{background:var(--card);border:3px solid var(--muted);border-radius:16px;padding:6px;cursor:pointer;width:31%;max-width:112px;touch-action:manipulation}
+.opt svg{width:100%;display:block}
+.rev-prefs{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;width:min(100%,390px)}
+.rev-prefs .lbl{margin:0}
+.rev-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;width:100%;margin:0;direction:rtl !important}
+.rev-grid button{background:var(--card);color:var(--fg);border:1px solid var(--muted);border-radius:12px;padding:8px 6px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;touch-action:manipulation;transition:border-color .15s,background .15s,transform .15s}
+.rev-grid button.on{background:color-mix(in srgb,var(--accent) 18%,var(--card));border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.rev-grid button:active{transform:scale(.98)}
+.rev-grid button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:430px){
+  .rev-grid{grid-template-columns:repeat(4,minmax(0,1fr));max-width:100%;gap:4px;width:100%}
+  .rev-grid button{padding:8px 2px;font-size:.7rem;line-height:1.15;white-space:normal}
+}
+@media (max-width:300px){
+  .rev-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
+  .rev-grid button{padding:7px 1px;font-size:.62rem}
+}
+
+.opt-label{padding:4px 2px 2px;color:var(--fg);font-size:.78rem;font-weight:700;line-height:1.2}
+.opt.good{border-color:#2e9e5b}.opt.bad{border-color:#e5484d}
+#revres{margin-top:10px;font-weight:700;min-height:1.4em}
+ .rl{display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;margin:0;line-height:1.35;user-select:none;-webkit-user-select:none;direction:ltr}
+html[dir="rtl"] .rl{direction:rtl}
+html[lang="en"] .rl,html[lang="de"] .rl{flex-direction:row-reverse}
+.rl input[type="checkbox"]{-webkit-appearance:none;appearance:none;width:18px;height:18px;flex:0 0 18px;margin:0;border:2px solid var(--muted);border-radius:5px;background:transparent;cursor:pointer;position:relative;display:inline-grid;place-items:center;padding:0;transition:background .15s,border-color .15s,box-shadow .15s;touch-action:manipulation}
+.rl input[type="checkbox"]::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);opacity:0;transition:transform .12s,opacity .12s}
+.rl input[type="checkbox"]:checked{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,72,43,.18)}
+.rl input[type="checkbox"]:checked::after{transform:rotate(45deg) scale(1);opacity:1}
+.rl input[type="checkbox"]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.rl span{display:inline-block}
+.toggles{display:flex;gap:6px 18px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.toggles .rl{margin:0}
+.chips{display:flex;gap:10px;justify-content:center;margin:20px 0 6px}
+.chip{flex:1 1 0;max-width:130px;background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:7px 6px;font-size:.8rem;color:var(--muted);line-height:1.25}
+.chip b{display:block;font-size:1.45rem;color:var(--fg)}
+.chip small{display:block;font-size:.72rem}
+.chip.pop{animation:pop .6s}
+@keyframes pop{40%{transform:scale(1.14);border-color:var(--accent)}}
+.mini{font-size:.78rem;padding:5px 14px;margin:8px 0 20px}
+.btn{margin-top:10px}
+#res{margin-top:10px;font-weight:700;min-height:1.4em}
+.btn{margin-top:16px;touch-action:manipulation;background:none;border:1px solid var(--muted);color:var(--fg);padding:8px 16px;border-radius:999px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:focus-visible,.seg button:focus-visible,.gear:focus-visible,.x:focus-visible,.typebox input:focus-visible,.toggles input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sum{font-size:.82rem;color:var(--muted);margin:0 0 14px;direction:ltr;unicode-bidi:plaintext}
+/* ============================================================
+   4. SETTINGS PANEL
+   ============================================================ */
+.gear{position:fixed;touch-action:manipulation;top:calc(env(safe-area-inset-top,0px) + 10px);left:calc(12px + env(safe-area-inset-left,0px));z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--muted);background:var(--card);font-size:1.3rem;cursor:pointer;line-height:1}
+.gear:hover{border-color:var(--accent)}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.sheet[hidden]{display:none}
+.sheet{overscroll-behavior:contain}
+.panel{background:var(--bg);border:1px solid var(--muted);border-radius:20px;padding:18px;width:min(440px,100%);max-height:90vh;max-height:90dvh;overflow:auto;display:flex;flex-direction:column;gap:12px;align-items:center}
+.ph{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:1.05rem}
+.x{background:none;border:0;touch-action:manipulation;color:var(--fg);font-size:1.2rem;cursor:pointer;padding:4px 8px}
+.lbl{font-size:.8rem;color:var(--muted);margin-bottom:-6px}
+/* Keep settings physically stable when the interface language changes. */
+.ph{direction:ltr}
+.panel .seg{display:flex;width:min(100%,390px);margin:0;direction:ltr !important;flex-direction:row-reverse !important;unicode-bidi:isolate}
+.panel .seg button{flex:1 1 0;min-width:0;white-space:normal;text-align:center;padding:8px 8px}
+#segL{direction:ltr !important;flex-direction:row-reverse !important}
+.btn.on{border-color:var(--accent);color:var(--accent)}
+@media (max-width:640px){
+.tip{display:none}
+.sum{margin:0}
+:root{--cw:min(44vw,172px);--top:calc(var(--cw) + 12px)}
+body{align-items:flex-start;justify-content:flex-start;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));min-height:100vh;min-height:100dvh}
+.wrap{flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:10px}
+.side{display:flex;flex-direction:column;align-items:stretch}
+.clock{width:var(--cw);margin:0 auto;position:relative;top:auto;z-index:3;background:var(--bg);padding:8px 0 4px;order:-2}
+.clock svg{filter:none}
+.answer{order:-1;position:relative;top:auto;z-index:2;min-height:64px;padding:12px 14px;box-shadow:0 0 0 6px var(--bg),0 8px 0 6px var(--bg)}
+.answer .de{font-size:1.25rem}
+.cover{font-size:.95rem}
+.side h1,.side .hint{margin:0}
+.side h1{font-size:1.05rem;margin-top:4px}
+.hint{font-size:.82rem}
+.seg{align-self:center;margin:0}
+.seg button{padding:7px 12px;font-size:.92rem}
+.rl{margin:0;align-self:center}
+.btn{margin-top:0;align-self:center}
+.typebox,.extras,#rev{margin-top:0}
+.toggles{margin:0}
+.chips{margin:14px 0 0}
+.mini{align-self:center;margin:0}
+.typebox .btn{margin-top:8px}
+}
+@media (max-width:900px) and (max-height:500px){body{align-items:flex-start;justify-content:flex-start;padding:8px 12px 16px}.brandbar{margin-bottom:4px}.brandmark{width:36px;height:36px}.brandname{font-size:1.2rem}.brandtag{font-size:.52rem}.wrap{gap:14px;align-items:center}.clock{width:min(240px,48vh)}.answer{min-height:72px}.panel{max-height:94dvh}}
+@media (max-width:900px) and (max-height:500px){.side{width:min(100%,560px)}.brandbar{padding-left:48px;padding-right:48px}}
+html.ios body{overscroll-behavior-y:auto}
+html.ios .clock,html.ios .answer{position:relative;top:auto}
+html.ios input,html.ios button{font-size:16px}
+html.ios .panel{max-height:calc(100vh - 32px);max-height:calc(100svh - 32px);max-height:calc(100dvh - 32px)}
+html.ios-standalone .brandbar{padding-top:calc(7px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Final mobile layout hardening: keep a deterministic normal document flow across Chromium/WebKit/Safari. */
+@media (max-width:640px){
+  html,body{overflow-x:hidden}
+  body{align-items:flex-start;justify-content:flex-start}
+  .wrap{display:flex;flex-direction:column;direction:initial;align-items:stretch;justify-content:flex-start;gap:10px}
+  .side{display:flex !important;flex-direction:column !important;align-items:stretch !important;min-width:0 !important;flex:0 1 auto !important}
+  .clock{position:relative !important;top:auto !important;order:0 !important;width:var(--cw) !important;margin:0 auto !important;background:transparent !important}
+  .answer{position:relative !important;top:auto !important;order:0 !important;margin:0 !important;box-shadow:none !important;min-height:64px}
+  .side h1{order:1 !important;font-size:1.05rem !important;margin:4px 0 0 !important}
+  .side .hint.tip{display:none !important}
+  .sum{order:2 !important;margin:0 !important;white-space:normal !important;overflow:visible !important;line-height:1.5 !important;text-align:center !important;min-height:1.4em}
+  #live{order:1 !important}
+  #chips{order:2 !important;margin:14px 0 0 !important}
+  #score{order:3 !important;margin:0 !important}
+  #extras,#rev{order:4 !important;margin-top:0 !important}
+  #typebox{order:5 !important;margin-top:0 !important}
+  .typebox input{min-height:48px}
+  .btn{min-height:44px}
+}
+
+/* Final spacing pass: one consistent vertical rhythm for every practice mode. */
+@media (max-width:640px){
+  .side h1{margin:4px 0 4px !important}
+  #score{min-height:0 !important;line-height:1.4 !important}
+  #live{margin-top:4px !important}
+  #extras,#rev,#typebox{margin-top:12px !important}
+  #rev .opts{margin-top:0 !important}
+  #typebox{display:block}
+  #typebox[hidden],#extras[hidden],#rev[hidden]{display:none !important}
+  .typebox input{display:block;width:100%;min-height:48px}
+  .typebox .btn{margin-top:8px !important}
+}
+
+/* Arabic settings: checkbox visually sits on the left of the sentence. */
+html[dir="rtl"] .rl{direction:ltr !important;flex-direction:row-reverse !important}
+html[dir="rtl"] .rl span{direction:rtl;unicode-bidi:plaintext}
+html[dir="ltr"] .rl{direction:ltr !important;flex-direction:row-reverse !important}
+html[dir="ltr"] .rl span{direction:ltr;unicode-bidi:isolate}
+html[lang="en"] .rev-grid button,html[lang="de"] .rev-grid button{direction:ltr;unicode-bidi:isolate}
+@media (max-width:360px){
+  .brandbar{padding-left:48px;padding-right:48px}
+  .brandname{font-size:1.2rem}
+  .brandtag{font-size:.54rem;letter-spacing:.11em}
+  .toggles{gap:8px 12px}
+  .rl{font-size:.78rem}
+  .rl input[type="checkbox"]{width:17px;height:17px;flex-basis:17px}
+}
+@media (min-width:641px){
+  .side{min-width:0}
+}
+
+/* ============================================================
+   6. SHORT-VIEWPORT LAPTOP / DESKTOP
+   ============================================================ */
+/* Short-viewport desktop/laptop mode: keep the resume control in the visible workspace without forcing page scroll. */
+@media (min-width:641px) and (max-height:850px){
+  body{justify-content:flex-start;padding-top:clamp(12px,2.5vh,24px);padding-bottom:20px}
+  .brandbar{margin-bottom:clamp(7px,1.5vh,14px)}
+  .brandmark{width:56px;height:56px}
+  .brandname{font-size:clamp(1.35rem,3vw,1.9rem)}
+  .brandtag{margin-top:4px;font-size:.61rem}
+  .wrap{gap:clamp(26px,3vw,34px);max-width:940px;flex-direction:row-reverse;direction:ltr}
+  .clock{width:min(360px,46vh)}
+  .side{flex-basis:500px}
+  .answer{max-width:480px;align-self:center;width:100%;min-height:64px;padding:14px 12px}
+  h1{font-size:1.08rem;margin-bottom:6px}
+  .hint{font-size:.82rem;margin-bottom:10px}
+  .answer{padding:14px 12px;min-height:64px}
+  .answer .de{font-size:1.34rem}
+  .chips{margin:12px 0 5px;gap:9px}
+  .chip{padding:6px 6px;font-size:.74rem}
+  .chip b{font-size:1.3rem}
+  .chip small{font-size:.68rem}
+  .typebox{margin-top:10px}
+  .typebox .extras{margin-top:7px}
+  .extras{font-size:.86rem;line-height:1.6}
+  .btn{margin-top:9px;padding:7px 15px}
+  #live{margin-top:10px}
+}
+
+@media (min-width:641px) and (max-height:700px){
+  body{padding-top:8px}
+  .brandbar{margin-bottom:4px}
+  .brandmark{width:46px;height:46px}
+  .brandname{font-size:1.35rem}
+  .brandtag{font-size:.54rem}
+  .wrap{gap:22px;flex-direction:row-reverse;direction:ltr}
+  .clock{width:min(350px,45vh)}
+  .answer{min-height:70px;padding:14px 14px}
+  .answer .de{font-size:1.2rem}
+  .chips{margin:8px 0 3px}
+  .chip{padding:5px}
+  .hint{margin-bottom:5px}
+  #live{margin-top:7px}
+}
+
+
+
+@media (min-width:641px) and (max-height:850px){
+  .rev-prefs{margin-top:10px;gap:6px}
+  .rev-grid{gap:6px}
+  .rev-grid button{padding:7px 5px;font-size:.78rem}
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit}
+img,svg{max-width:100%}
+@supports (height: 100svh){ body{min-height:100svh} }
+@supports not (height: 100dvh){ body{min-height:100vh} }
+
+/* Laptop visual balance: keep the answer block and clock closer as one composition. */
+@media (min-width:641px) and (min-height:701px) and (max-height:900px){
+  body{
+    justify-content:center;
+    padding-top:clamp(16px,3vh,28px);
+    padding-bottom:clamp(16px,3vh,28px);
+  }
+  .brandbar{margin-bottom:clamp(8px,1.8vh,16px)}
+  .wrap{
+    display:grid;
+    grid-template-columns:500px 360px;
+    gap:24px;
+    align-items:center;
+    justify-content:center;
+    max-width:884px;
+    flex-wrap:nowrap;
+  }
+  .side{grid-column:1;grid-row:1;width:500px;flex:none}
+  .clock{grid-column:2;grid-row:1;width:360px;margin:0}
+  .answer{min-height:72px;padding:14px 14px}
+}
+
+
+/* Final responsive balance: keep the main composition side-by-side on desktop displays,
+   while allowing tablets/phones to use the compact vertical flow. */
+@media (min-width:960px){
+  .wrap{
+    display:grid;
+    grid-template-columns:520px clamp(340px,23vw,390px);
+    gap:30px;
+    align-items:center;
+    justify-content:center;
+    max-width:940px;
+    flex-wrap:nowrap;
+    direction:ltr;
+  }
+  .side{
+    grid-column:1;
+    grid-row:1;
+    width:520px;
+    max-width:520px;
+    min-width:0;
+    flex:none;
+  }
+  .answer{
+    max-width:440px;
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .clock{
+    grid-column:2;
+    grid-row:1;
+    width:100%;
+    max-width:none;
+    margin:0;
+  }
+}
+
+@media (min-width:641px) and (max-width:959px){
+  .wrap{
+    flex-direction:column;
+    flex-wrap:nowrap;
+    align-items:center;
+    gap:14px;
+    max-width:620px;
+  }
+  .side{width:min(100%,560px);min-width:0;flex:none}
+  .clock{width:min(360px,72vw);margin:0 auto}
+}
+
+/* Responsive reading size: the instructional text and revealed explanation stay readable
+   from normal laptops through large desktop monitors. */
+@media (min-width:641px){
+  .hint.tip{font-size:clamp(.92rem,.85vw,1.06rem);line-height:1.55}
+  .sum{font-size:clamp(.86rem,.8vw,1rem);line-height:1.55}
+  .extras{font-size:clamp(.94rem,.85vw,1.06rem);line-height:1.8}
+}
+
+@media (max-width:640px){
+  .sum{font-size:.86rem;line-height:1.5}
+  .extras{font-size:.92rem;line-height:1.65}
+}
+
+/* Final desktop answer-panel height adjustment only. */
+@media (min-width:960px) and (min-height:701px) and (max-height:900px){
+  .answer{height:54px;min-height:0;padding:0 12px}
+}
+
+/* V7: explicit 24-inch/desktop answer-box sizing.
+   Keep the desktop answer box compact without changing its width or any other layout element. */
+@media (min-width:960px) and (min-height:701px){
+  .answer{
+    width:440px !important;
+    max-width:440px !important;
+    height:64px !important;
+    min-height:64px !important;
+    max-height:64px !important;
+    padding:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    flex:none !important;
+  }
+}
+
+/* Keep each reverse-difficulty emoji beside its label in every language. */
+.rev-grid button{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:center;gap:.3em;white-space:nowrap;unicode-bidi:isolate}
+.rev-grid button .rev-emoji{display:inline-block;flex:0 0 auto;line-height:1}
+.rev-grid button .rev-label{display:inline-block;flex:0 1 auto;min-width:0;white-space:nowrap}
+@media (max-width:430px){
+  .rev-grid button{gap:2px;font-size:.66rem;padding:8px 2px;white-space:nowrap}
+}
+
+
+/* v102.6: prevent long localized difficulty labels from overflowing adjacent buttons.
+   Two columns give every level enough width while preserving RTL difficulty order. */
+#revSeg{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+  width:100%;
+}
+#revSeg > button{
+  min-width:0;
+  width:100%;
+  min-height:42px;
+  padding:9px 12px;
+  font-size:.84rem;
+  line-height:1.2;
+  white-space:nowrap;
+}
+#revSeg > button .rev-emoji{
+  flex:0 0 auto;
+}
+#revSeg > button .rev-label{
+  flex:0 1 auto;
+  min-width:0;
+  white-space:nowrap;
+}
+@media (max-width:430px){
+  #revSeg{gap:7px !important;}
+  #revSeg > button{padding:8px 10px;font-size:.8rem;}
+}
+
+/* ============================================================
+   v102.7 RESPONSIVE LAYOUT GUARDRAILS
+   Final override layer: preserves the existing UI and behavior,
+   while making sizing predictable from 320px phones to desktop.
+   ============================================================ */
+html,
+body {
+  width: 100%;
+  min-width: 0;
+}
+
+body {
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
+}
+
+.brandbar,
+.brandcopy,
+.wrap,
+.side,
+.answer,
+.typebox,
+.extras,
+#rev,
+#revres,
+.chips,
+.chip {
+  min-width: 0;
+}
+
+.brandbar {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+.brandcopy,
+.brandname,
+.brandtag {
+  max-width: 100%;
+}
+
+.wrap {
+  width: min(100%, 940px);
+  flex: 0 1 auto;
+}
+
+.side {
+  overflow-wrap: break-word;
+}
+
+.answer {
+  max-width: 100%;
+}
+
+.answer .de {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.sum,
+.hint,
+.extras,
+#score,
+#res,
+#revres {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.typebox input {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Phone layout: natural vertical flow and no fixed-height assumptions. */
+@media (max-width: 640px) {
+  body {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-top: max(8px, env(safe-area-inset-top, 0px));
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .brandbar {
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 12px 0 52px;
+    margin-bottom: 10px;
+  }
+
+  .brandmark {
+    width: clamp(40px, 12vw, 52px);
+    height: auto;
+  }
+
+  .brandname {
+    font-size: clamp(1.15rem, 5vw, 1.55rem);
+    line-height: 1.05;
+  }
+
+  .brandtag {
+    font-size: clamp(.48rem, 2vw, .64rem);
+    letter-spacing: clamp(.06em, .3vw, .12em);
+    line-height: 1.2;
+    overflow-wrap: normal;
+  }
+
+  .wrap {
+    display: flex !important;
+    width: 100%;
+    max-width: 100%;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .clock {
+    width: clamp(142px, 47vw, 190px) !important;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 4px 0;
+    flex: 0 1 auto;
+  }
+
+  .side {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 1 auto !important;
+    align-items: stretch;
+  }
+
+  .side h1 {
+    font-size: clamp(1rem, 4.2vw, 1.1rem) !important;
+    line-height: 1.35;
+  }
+
+  .answer {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 60px !important;
+    max-height: none !important;
+    padding: 12px !important;
+    margin-inline: 0 !important;
+  }
+
+  .answer .de {
+    font-size: clamp(1rem, 4.5vw, 1.25rem);
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .seg {
+    max-width: 100%;
+  }
+
+  .seg button {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .chips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    gap: 6px;
+  }
+
+  .chip {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 7px 3px;
+    font-size: clamp(.66rem, 2.4vw, .8rem);
+    overflow-wrap: anywhere;
+  }
+
+  .chip b {
+    font-size: clamp(1.05rem, 4.5vw, 1.35rem);
+    line-height: 1.25;
+  }
+
+  .chip small {
+    font-size: clamp(.58rem, 2.1vw, .7rem);
+    overflow-wrap: anywhere;
+  }
+
+  .toggles {
+    max-width: 100%;
+    gap: 8px 12px;
+  }
+
+  .rl {
+    min-width: 0;
+    max-width: 100%;
+    font-size: clamp(.76rem, 2.7vw, .9rem);
+  }
+
+  .btn,
+  .seg button,
+  .rev-grid button,
+  .opt,
+  .gear,
+  .x {
+    touch-action: manipulation;
+  }
+
+  .typebox input {
+    width: 100%;
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  .opts {
+    width: 100%;
+    gap: clamp(6px, 2vw, 10px);
+  }
+
+  .opt {
+    width: calc((100% - 20px) / 3);
+    min-width: 0;
+    max-width: 112px;
+  }
+
+  /* Keep the settings panel inside the visible viewport while allowing scroll. */
+  .sheet {
+    padding: max(10px, env(safe-area-inset-top, 0px))
+             max(10px, env(safe-area-inset-right, 0px))
+             max(10px, env(safe-area-inset-bottom, 0px))
+             max(10px, env(safe-area-inset-left, 0px));
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 440px;
+    min-height: 0;
+    max-height: calc(100dvh - 20px);
+    padding: clamp(12px, 3.5vw, 18px);
+    gap: clamp(8px, 2.5vw, 12px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .panel .seg {
+    width: 100%;
+  }
+
+  .panel .seg button {
+    padding: 8px 5px;
+    line-height: 1.25;
+    font-size: clamp(.72rem, 2.8vw, .9rem);
+    overflow-wrap: anywhere;
+  }
+
+  #revSeg > button {
+    min-height: 42px;
+    padding: 8px 6px;
+    font-size: clamp(.72rem, 2.7vw, .84rem);
+  }
+}
+
+/* Very narrow phones, including the 320px-wide iPhone SE (2016) viewport. */
+@media (max-width: 359px) {
+  body {
+    padding-left: max(8px, env(safe-area-inset-left, 0px));
+    padding-right: max(8px, env(safe-area-inset-right, 0px));
+  }
+
+  .brandbar {
+    gap: 7px;
+    padding-left: 48px;
+    padding-right: 6px;
+  }
+
+  .brandmark {
+    width: 38px;
+  }
+
+  .brandname {
+    font-size: 1.12rem;
+  }
+
+  .brandtag {
+    font-size: .47rem;
+    letter-spacing: .055em;
+  }
+
+  .gear {
+    width: 40px;
+    height: 40px;
+    left: calc(8px + env(safe-area-inset-left, 0px));
+  }
+
+  .clock {
+    width: clamp(138px, 47vw, 160px) !important;
+  }
+
+  .answer {
+    border-radius: 12px;
+    padding: 10px !important;
+  }
+
+  .chips {
+    gap: 4px;
+  }
+
+  .chip {
+    padding: 6px 2px;
+  }
+
+  #revSeg {
+    gap: 5px !important;
+  }
+
+  #revSeg > button {
+    gap: 2px;
+    padding: 7px 3px;
+    font-size: .7rem;
+  }
+}
+
+/* Tablet and compact laptop: stack the clock and practice area instead of squeezing. */
+@media (min-width: 641px) and (max-width: 1023px) {
+  body {
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: clamp(14px, 2.5vh, 24px);
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .brandbar {
+    width: min(100%, 680px);
+    margin-bottom: clamp(8px, 1.8vh, 14px);
+  }
+
+  .wrap {
+    display: flex !important;
+    width: min(100%, 680px);
+    max-width: 680px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: clamp(12px, 2.2vw, 22px);
+  }
+
+  .clock {
+    width: min(360px, 52vw) !important;
+    margin: 0 auto;
+  }
+
+  .side {
+    width: min(100%, 620px);
+    max-width: 620px;
+    flex: 0 1 auto !important;
+  }
+
+  .answer {
+    width: min(100%, 520px) !important;
+    height: auto !important;
+    min-height: 64px !important;
+    max-height: none !important;
+    padding: 12px 14px !important;
+    margin-inline: auto !important;
+  }
+
+  .chips {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .chip {
+    min-width: 0;
+  }
+
+  .panel {
+    max-height: calc(100dvh - 32px);
+  }
+}
+
+/* Desktop: retain the existing side-by-side design without fixed overflow. */
+@media (min-width: 1024px) {
+  body {
+    align-items: center;
+    justify-content: center;
+    padding-top: max(18px, env(safe-area-inset-top, 0px));
+    padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .brandbar {
+    width: min(100%, 980px);
+    margin-bottom: clamp(8px, 1.5vh, 14px);
+  }
+
+  .wrap {
+    display: grid !important;
+    width: min(100%, 940px);
+    max-width: 940px;
+    grid-template-columns: minmax(0, 520px) minmax(0, 390px);
+    gap: clamp(20px, 2.2vw, 30px);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
+  .side {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    max-width: 520px;
+    min-width: 0;
+    flex: none;
+  }
+
+  .clock {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100% !important;
+    max-width: 390px;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .answer {
+    width: min(100%, 440px) !important;
+    max-width: 440px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    padding: 0 12px !important;
+    margin-inline: auto !important;
+  }
+}
+
+/* On short landscape screens, prefer scrolling over clipping the practice controls. */
+@media (max-height: 560px) and (min-width: 641px) {
+  body {
+    justify-content: flex-start;
+    padding-top: 10px;
+    padding-bottom: 16px;
+  }
+
+  .brandbar {
+    margin-bottom: 6px;
+  }
+
+  .brandmark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .wrap {
+    gap: 14px;
+  }
+
+  .clock {
+    width: min(300px, 42vh) !important;
+  }
+
+  .panel {
+    max-height: calc(100dvh - 20px);
+  }
+}
+
+@media (max-width: 640px) and (max-height: 440px) {
+  body {
+    padding-top: max(6px, env(safe-area-inset-top, 0px));
+  }
+
+  .brandbar {
+    margin-bottom: 4px;
+  }
+
+  .brandmark {
+    width: 34px;
+  }
+
+  .clock {
+    width: clamp(116px, 34vw, 150px) !important;
+    padding: 0;
+  }
+
+  .wrap {
+    gap: 6px;
+  }
+}
+
+/* v102.8 typography refinement: slightly larger type throughout, with extra
+   attention to readability on phones. Keep layout and application behavior intact. */
+.side h1 {
+  font-size: clamp(1.18rem, 1.4vw, 1.25rem);
+}
+.hint {
+  font-size: .94rem;
+}
+.sum {
+  font-size: .86rem;
+}
+.chip {
+  font-size: .84rem;
+}
+.chip small {
+  font-size: .75rem;
+}
+.lbl {
+  font-size: .86rem;
+}
+
+@media (max-width: 640px) {
+  .brandtag {
+    font-size: clamp(.58rem, 2.2vw, .68rem);
+    letter-spacing: clamp(.045em, .22vw, .09em);
+  }
+
+  .side h1 {
+    font-size: clamp(1.1rem, 4.8vw, 1.25rem) !important;
+    line-height: 1.4;
+  }
+
+  .answer {
+    min-height: 66px !important;
+    padding: 13px 12px !important;
+  }
+
+  .answer .de {
+    font-size: clamp(1.1rem, 5vw, 1.35rem) !important;
+    line-height: 1.4;
+  }
+
+  .cover {
+    font-size: clamp(1rem, 4.2vw, 1.1rem) !important;
+    line-height: 1.4;
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  .sum,
+  #score,
+  #res,
+  #revres {
+    font-size: clamp(.86rem, 3vw, .96rem) !important;
+    line-height: 1.5;
+  }
+
+  .chip {
+    font-size: clamp(.73rem, 2.8vw, .86rem) !important;
+    line-height: 1.3;
+    padding: 8px 3px;
+  }
+
+  .chip b {
+    font-size: clamp(1.15rem, 4.8vw, 1.42rem) !important;
+    line-height: 1.3;
+  }
+
+  .chip small {
+    font-size: clamp(.66rem, 2.6vw, .76rem) !important;
+    line-height: 1.3;
+  }
+
+  .btn {
+    font-size: clamp(1rem, 3.8vw, 1.06rem);
+    line-height: 1.3;
+    padding: 9px 16px;
+  }
+
+  .rl {
+    font-size: clamp(.84rem, 3.2vw, .95rem) !important;
+    line-height: 1.45;
+  }
+
+  .panel {
+    gap: clamp(9px, 2.5vw, 13px);
+  }
+
+  .ph {
+    font-size: 1.12rem;
+  }
+
+  .lbl {
+    font-size: .9rem !important;
+    line-height: 1.35;
+  }
+
+  .panel .seg button {
+    font-size: clamp(.82rem, 3.2vw, .96rem) !important;
+    line-height: 1.3;
+    padding: 9px 5px;
+  }
+
+  #revSeg > button {
+    font-size: clamp(.78rem, 2.9vw, .88rem) !important;
+    line-height: 1.25;
+    padding: 9px 7px;
+  }
+
+  .typebox input {
+    font-size: 16px;
+  }
+
+  .extras {
+    font-size: clamp(.92rem, 3.2vw, 1rem) !important;
+    line-height: 1.75;
+  }
+}
+
+/* On the 320px-wide SE 2016 layout, keep the typography larger without
+   letting button labels or the three compact statistic cards become cramped. */
+@media (max-width: 359px) {
+  .brandtag {
+    font-size: .58rem;
+    letter-spacing: .035em;
+  }
+
+  .side h1 {
+    font-size: 1.1rem !important;
+  }
+
+  .answer .de {
+    font-size: 1.1rem !important;
+  }
+
+  .chip {
+    padding: 7px 2px;
+    font-size: .73rem !important;
+  }
+
+  .chip b {
+    font-size: 1.15rem !important;
+  }
+
+  .panel .seg button {
+    font-size: .82rem !important;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+}
+
+
+
+/* Keep the always-German learning hint readable in RTL interface languages. */
+
+/* ============================================================
+   v102.9: centered brand, clearer phone typography, and
+   language-aware time-difficulty order.
+   These are visual/layout rules only; application logic is unchanged.
+   ============================================================ */
+
+/* Center the logo and wordmark as one group. The gear stays independently fixed. */
+@media (max-width: 640px) {
+  .brandbar {
+    padding-left: 12px;
+    padding-right: 12px;
+    justify-content: center;
+  }
+
+  .brandmark {
+    width: clamp(40px, 12vw, 52px);
+    height: auto;
+  }
+
+  .brandname {
+    font-size: clamp(1.18rem, 5.1vw, 1.58rem);
+  }
+
+  .brandtag {
+    font-size: clamp(.60rem, 2.35vw, .70rem);
+    letter-spacing: clamp(.035em, .18vw, .08em);
+  }
+
+  /* Increase type size without adding margin or padding. */
+  .side h1 {
+    font-size: clamp(1.18rem, 5vw, 1.32rem) !important;
+  }
+
+  .answer .de {
+    font-size: clamp(1.2rem, 5.4vw, 1.45rem) !important;
+  }
+
+  .cover {
+    font-size: clamp(1.06rem, 4.5vw, 1.2rem) !important;
+  }
+
+  .sum,
+  #score,
+  #res,
+  #revres {
+    font-size: clamp(.90rem, 3.3vw, 1rem) !important;
+  }
+
+  .chip {
+    font-size: clamp(.78rem, 3vw, .92rem) !important;
+  }
+
+  .chip b {
+    font-size: clamp(1.2rem, 5vw, 1.45rem) !important;
+  }
+
+  .chip small {
+    font-size: clamp(.72rem, 2.9vw, .82rem) !important;
+  }
+
+  .btn {
+    font-size: clamp(1.04rem, 4vw, 1.12rem);
+  }
+
+  /* Settings text is larger; existing margins and paddings are preserved. */
+  .panel .ph {
+    font-size: 1.2rem;
+  }
+
+  .panel .lbl {
+    font-size: 1rem !important;
+    line-height: 1.35;
+  }
+
+  .panel .seg button {
+    font-size: clamp(.94rem, 4vw, 1.02rem) !important;
+    line-height: 1.3;
+  }
+
+  #revSeg > button {
+    font-size: clamp(.86rem, 3.6vw, .98rem) !important;
+    line-height: 1.3;
+  }
+
+  .panel .rl,
+  #rst {
+    font-size: 1rem !important;
+  }
+
+  /* Two columns give the four time choices readable labels on phones. */
+  #seg {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+    width: 100%;
+  }
+}
+
+/* Time options follow the natural reading direction: Arabic from the right,
+   English and German from the left. DOM order is hours → quarter/half → 5 min → 1 min. */
+#seg {
+  direction: rtl !important;
+  flex-direction: row !important;
+}
+
+html[lang="en"] #seg,
+html[lang="de"] #seg {
+  direction: ltr !important;
+  flex-direction: row !important;
+}
+
+/* Keep the centered wordmark symmetrical on the narrowest phones too. */
+@media (max-width: 359px) {
+  .brandbar {
+    padding-left: 12px;
+    padding-right: 12px;
+    gap: 7px;
+  }
+
+  .brandmark {
+    width: 38px;
+  }
+
+  .brandname {
+    font-size: 1.18rem;
+  }
+
+  .brandtag {
+    font-size: .60rem;
+    letter-spacing: .025em;
+  }
+}
+
+
+/* ============================================================
+   v102.10: connected difficulty controls and language-aware order.
+   Scoped to settings controls; labels, language, and app logic stay intact.
+   ============================================================ */
+:root {
+  --control-divider: #eceae4;
+}
+
+/* Time difficulty: one connected control with warm-white separators. */
+#seg {
+  gap: 0 !important;
+  border: 1.5px solid var(--control-divider) !important;
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+
+#seg button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+}
+
+#seg button + button {
+  border-inline-start: 1.5px solid var(--control-divider) !important;
+}
+
+/* Clock difficulty: restore four independent buttons in a 2×2 grid. */
+#revSeg {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  direction: rtl !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  width: 100%;
+}
+
+#revSeg > button {
+  min-width: 0;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--muted) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+  color: var(--fg) !important;
+  box-shadow: none !important;
+  transform: none;
+  padding: 9px 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#revSeg > button.on {
+  background: color-mix(in srgb, var(--accent) 18%, var(--card)) !important;
+  color: var(--fg) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent) inset !important;
+}
+
+#revSeg > button:active { transform: none; }
+
+@media (max-width: 430px) {
+  #revSeg { gap: 7px !important; }
+  #revSeg > button { padding: 8px 10px; font-size: .8rem; }
+}
+
+/* English and German: practice mode reads left to right. Arabic is untouched. */
+html[lang="en"] #seg3,
+html[lang="de"] #seg3 {
+  direction: ltr !important;
+  flex-direction: row !important;
+}
+
+/* Clock-difficulty grid follows the reading direction for EN/DE. */
+html[lang="en"] #revSeg,
+html[lang="de"] #revSeg {
+  direction: ltr !important;
+}
+
+/* Keep the time-difficulty grid's separators centered on small screens. */
+@media (max-width: 640px) {
+  #seg button + button {
+    border-inline-start: 0 !important;
+  }
+
+  #seg button:nth-child(odd) {
+    border-inline-end: 1.5px solid var(--control-divider) !important;
+  }
+
+  #seg button:nth-child(-n + 2) {
+    border-bottom: 1.5px solid var(--control-divider) !important;
+  }
+}
+
+/* Short phone viewports should scroll the settings sheet instead of shrinking
+   its controls below a comfortable touch/readability size. */
+.panel > * {
+  flex-shrink: 0;
+}
+
+
+/* v102.11: local Type/Reverse progress window beside Reset Stats. */
+.settings-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  width: min(100%, 390px);
+}
+
+.settings-actions .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.progress-popup {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(72dvh, 440px);
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--muted);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .32);
+}
+
+.progress-popup[hidden] { display: none; }
+
+.progress-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.progress-popup-head .x { flex: 0 0 auto; }
+
+.progress-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.progress-mode + .progress-mode {
+  border-top: 1px solid color-mix(in srgb, var(--muted) 55%, transparent);
+  padding-top: 9px;
+}
+
+.progress-mode h3 {
+  margin: 0 0 2px;
+  color: var(--fg);
+  font-size: .95rem;
+  line-height: 1.3;
+}
+
+.progress-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.35;
+}
+
+.progress-stat span { min-width: 0; overflow-wrap: anywhere; }
+.progress-stat b { flex: 0 0 auto; color: var(--fg); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 640px) {
+  .settings-actions .btn,
+  #progressBtn { font-size: clamp(.88rem, 3.7vw, 1rem) !important; }
+  .progress-popup { padding: 10px; gap: 8px; }
+  .progress-stat { font-size: clamp(.82rem, 3.2vw, .9rem); }
+}
+
+
+/* Compact mobile instruction: clock above, answer box below. */
+@media (max-width:640px){
+  .side .tip-mobile{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    gap:.38em;
+    order:-1 !important;
+    margin:0 0 2px !important;
+    font-size:clamp(.84rem,3.5vw,.96rem);
+    line-height:1.35;
+    white-space:nowrap;
+  }
+  .tip-mobile [data-i18n],.tip-mobile-arrow{unicode-bidi:isolate}
+  .tip-mobile-arrow{
+    direction:ltr;
+    color:var(--accent);
+    font-size:1.08em;
+    font-weight:800;
+    line-height:1;
+  }
+  html[lang="ar"] .tip-mobile{direction:rtl}
+  html[lang="en"] .tip-mobile,html[lang="de"] .tip-mobile{direction:ltr}
+}
+
+/* Responsive audit pass: small tablets, compact laptop windows and large desktops. */
+@media (min-width: 641px) and (max-width: 839px) {
+  .brandbar {
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 680px;
+    min-width: 0;
+    gap: clamp(12px, 2.5vw, 22px);
+  }
+
+  .side {
+    width: min(100%, 640px) !important;
+    max-width: 640px !important;
+    min-width: 0 !important;
+  }
+
+  .answer {
+    width: min(100%, 600px) !important;
+    max-width: 600px !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Short, landscape laptop windows can use two columns without a tall scroll. */
+@media (min-width: 760px) and (max-width: 839px) and (max-height: 760px) {
+  body {
+    justify-content: flex-start;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .brandbar { margin-bottom: 6px; }
+
+  .wrap {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .85fr) !important;
+    gap: 20px;
+    max-width: 1120px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .side {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .clock {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, clamp(250px, 37vw, 420px), 52vh) !important;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .answer {
+    width: min(100%, 440px) !important;
+    max-width: 440px !important;
+  }
+}
+
+/* Side-by-side practice layout starts when there is enough horizontal room. */
+@media (min-width: 840px) {
+  .brandbar {
+    width: min(1120px, 100%);
+    max-width: 1120px;
+  }
+
+  .wrap {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .85fr) !important;
+    gap: clamp(20px, 2.4vw, 36px);
+    width: min(100%, 1120px);
+    max-width: 1120px;
+    min-width: 0;
+    flex-wrap: nowrap;
+    direction: ltr;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .side {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: none !important;
+  }
+
+  .clock {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, clamp(280px, 37vw, 420px), 52vh) !important;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .answer {
+    width: min(100%, 440px) !important;
+    max-width: 440px !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Landscape laptop/monitor refinement: keep the typing field proportionate. */
+@media (orientation: landscape) and (min-width: 641px) {
+  .typebox {
+    width: min(100%, 520px);
+    margin-inline: auto;
+  }
+
+  .typebox input {
+    height: 48px;
+    min-height: 0;
+    padding: 0 14px;
+    font-size: 1rem;
+    line-height: 1.2;
+    box-sizing: border-box;
+  }
+}
+/* Respect the hidden state despite the answer card’s display:flex styling. */
+.answer[hidden]{display:none !important}

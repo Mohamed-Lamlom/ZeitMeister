@@ -1,0 +1,2363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="description" content="Practice reading analog clocks and telling the time in German, with informal and official forms.">
+<meta name="theme-color" content="#f6f3ec">
+<meta name="theme-color" content="#14171f" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+
+
+
+
+<meta name="apple-mobile-web-app-title" content="ZeitMeister">
+<title>ZeitMeister — German Time Trainer</title>
+<style>
+/*
+ * ZeitMeister — German Time Trainer
+ * Main stylesheet
+ *
+ * Sections below are kept in one file so the project stays simple to edit.
+ */
+
+/* ============================================================
+   1. THEME & GLOBAL RESET
+   ============================================================ */
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f3ec;--fg:#1d2433;--card:#fff;--accent:#d9482b;--muted:#6b7280;--cover:#1d2433;--coverfg:#f6f3ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#eceae4;--coverfg:#14171f}}
+:root[data-theme="dark"]{--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#e8e5df;--coverfg:#14171f}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{overflow-x:hidden}
+button,input{-webkit-appearance:none;appearance:none}
+body.modal-open{overflow:hidden}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px max(20px,env(safe-area-inset-right,0px)) 20px max(20px,env(safe-area-inset-left,0px))}
+.wrap{display:flex;flex-wrap:wrap;flex-direction:row-reverse;direction:ltr;gap:30px;align-items:center;justify-content:center;max-width:940px;width:100%}
+.brandbar{
+  width:min(980px,100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:0 0 14px;
+  padding:0 52px;
+  direction:ltr;
+  text-align:left;
+}
+.brandmark{width:56px;height:56px;flex:0 0 auto;display:block}
+.brandcopy{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.brandname{font-size:clamp(1.35rem,3.1vw,2rem);font-weight:800;letter-spacing:-.035em;line-height:1}
+.brandname .zeit{color:var(--fg)}
+.brandname .meister{color:var(--accent)}
+.brandtag{margin-top:5px;color:var(--muted);font-size:.7rem;font-weight:700;letter-spacing:.17em;text-transform:uppercase;line-height:1}
+/* ============================================================
+   5. MOBILE / TABLET RESPONSIVE LAYOUT
+   ============================================================ */
+@media (max-width:640px){
+.tip{display:none}
+.sum{margin:0}
+:root{--cw:min(44vw,172px)}
+body{align-items:flex-start;justify-content:flex-start;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));min-height:100vh;min-height:100svh;min-height:100dvh}
+.wrap{flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:10px}
+.side{display:flex;flex-direction:column;align-items:stretch;min-width:0;flex:0 1 auto}
+.clock{width:var(--cw);margin:0 auto;padding:8px 0 4px;order:-2}
+.clock svg{filter:none}
+.answer{order:-2;min-height:64px;padding:12px 14px;box-shadow:none;margin-bottom:2px}
+.side h1{order:-1;font-size:1.05rem;margin:4px 0 0}
+.side .hint{margin:0}
+.answer .de{font-size:1.25rem}
+.cover{font-size:.95rem}
+.hint{font-size:.82rem}
+.seg{align-self:center;margin:0}
+.seg button{padding:7px 12px;font-size:.92rem}
+.rl{margin:0;align-self:center}
+.btn{margin-top:0;align-self:center;min-height:44px}
+.typebox,.extras,#rev{margin-top:0}
+.toggles{margin:0}
+.chips{margin:14px 0 0}
+.mini{align-self:center;margin:0}
+.typebox .btn{margin-top:8px}
+}
+
+/* ============================================================
+   2. MAIN LAYOUT & CLOCK
+   ============================================================ */
+.clock{width:min(360px,80vw);cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.clock[tabindex],.answer[tabindex],.opt[tabindex]{outline:none}
+.clock[tabindex]:focus-visible,.answer[tabindex]:focus-visible,.opt[tabindex]:focus-visible{box-shadow:0 0 0 3px var(--accent),0 0 0 6px var(--bg)}
+.clock svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
+.side{flex:1 1 560px;min-width:240px;text-align:center}
+h1{font-size:1.15rem;margin:0 0 6px}
+.hint{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+.tip-mobile{display:none}
+/* ============================================================
+   3. PRACTICE UI & CONTROLS
+   ============================================================ */
+.answer{position:relative;touch-action:manipulation;background:var(--card);border-radius:16px;padding:26px 18px;min-height:96px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;border:2px solid var(--accent)}
+.answer .de{font-size:1.55rem;font-weight:700;direction:ltr;line-height:1.3}
+.cover{position:absolute;inset:0;background:var(--cover);color:var(--coverfg);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:opacity .3s}
+.answer.open .cover{opacity:0;pointer-events:none}
+.seg{display:inline-flex;border:1px solid var(--muted);border-radius:999px;overflow:hidden;margin:0 4px 12px}
+.seg button{background:none;border:0;touch-action:manipulation;color:var(--fg);padding:8px 16px;font:inherit;cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff}
+.typebox{margin-top:14px}
+.typebox input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--muted);background:var(--card);color:var(--fg);font:inherit;font-size:1.1rem;direction:ltr;text-align:left}
+.typebox input:focus{outline:none;border-color:var(--accent)}
+.typebox .extras{margin-top:12px;text-align:center;font-size:.92rem;line-height:1.9;color:var(--muted)}
+.extras b{color:var(--fg)}
+/* Reverse answer choices */
+.opts{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.opt{background:var(--card);border:3px solid var(--muted);border-radius:16px;padding:6px;cursor:pointer;width:31%;max-width:112px;touch-action:manipulation}
+.opt svg{width:100%;display:block}
+.rev-prefs{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;width:min(100%,390px)}
+.rev-prefs .lbl{margin:0}
+.rev-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;width:100%;margin:0;direction:rtl !important}
+.rev-grid button{background:var(--card);color:var(--fg);border:1px solid var(--muted);border-radius:12px;padding:8px 6px;font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;touch-action:manipulation;transition:border-color .15s,background .15s,transform .15s}
+.rev-grid button.on{background:color-mix(in srgb,var(--accent) 18%,var(--card));border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.rev-grid button:active{transform:scale(.98)}
+.rev-grid button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:430px){
+  .rev-grid{grid-template-columns:repeat(4,minmax(0,1fr));max-width:100%;gap:4px;width:100%}
+  .rev-grid button{padding:8px 2px;font-size:.7rem;line-height:1.15;white-space:normal}
+}
+@media (max-width:300px){
+  .rev-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
+  .rev-grid button{padding:7px 1px;font-size:.62rem}
+}
+
+.opt-label{padding:4px 2px 2px;color:var(--fg);font-size:.78rem;font-weight:700;line-height:1.2}
+.opt.good{border-color:#2e9e5b}.opt.bad{border-color:#e5484d}
+#revres{margin-top:10px;font-weight:700;min-height:1.4em}
+ .rl{display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;margin:0;line-height:1.35;user-select:none;-webkit-user-select:none;direction:ltr}
+html[dir="rtl"] .rl{direction:rtl}
+html[lang="en"] .rl,html[lang="de"] .rl{flex-direction:row-reverse}
+.rl input[type="checkbox"]{-webkit-appearance:none;appearance:none;width:18px;height:18px;flex:0 0 18px;margin:0;border:2px solid var(--muted);border-radius:5px;background:transparent;cursor:pointer;position:relative;display:inline-grid;place-items:center;padding:0;transition:background .15s,border-color .15s,box-shadow .15s;touch-action:manipulation}
+.rl input[type="checkbox"]::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);opacity:0;transition:transform .12s,opacity .12s}
+.rl input[type="checkbox"]:checked{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,72,43,.18)}
+.rl input[type="checkbox"]:checked::after{transform:rotate(45deg) scale(1);opacity:1}
+.rl input[type="checkbox"]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.rl span{display:inline-block}
+.toggles{display:flex;gap:6px 18px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.toggles .rl{margin:0}
+.chips{display:flex;gap:10px;justify-content:center;margin:20px 0 6px}
+.chip{flex:1 1 0;max-width:130px;background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:7px 6px;font-size:.8rem;color:var(--muted);line-height:1.25}
+.chip b{display:block;font-size:1.45rem;color:var(--fg)}
+.chip small{display:block;font-size:.72rem}
+.chip.pop{animation:pop .6s}
+@keyframes pop{40%{transform:scale(1.14);border-color:var(--accent)}}
+.mini{font-size:.78rem;padding:5px 14px;margin:8px 0 20px}
+.btn{margin-top:10px}
+#res{margin-top:10px;font-weight:700;min-height:1.4em}
+.btn{margin-top:16px;touch-action:manipulation;background:none;border:1px solid var(--muted);color:var(--fg);padding:8px 16px;border-radius:999px;font:inherit;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:focus-visible,.seg button:focus-visible,.gear:focus-visible,.x:focus-visible,.typebox input:focus-visible,.toggles input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sum{font-size:.82rem;color:var(--muted);margin:0 0 14px;direction:ltr;unicode-bidi:plaintext}
+/* ============================================================
+   4. SETTINGS PANEL
+   ============================================================ */
+.gear{position:fixed;touch-action:manipulation;top:calc(env(safe-area-inset-top,0px) + 10px);left:calc(12px + env(safe-area-inset-left,0px));z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--muted);background:var(--card);font-size:1.3rem;cursor:pointer;line-height:1}
+.gear:hover{border-color:var(--accent)}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.sheet[hidden]{display:none}
+.sheet{overscroll-behavior:contain}
+.panel{background:var(--bg);border:1px solid var(--muted);border-radius:20px;padding:18px;width:min(440px,100%);max-height:90vh;max-height:90dvh;overflow:auto;display:flex;flex-direction:column;gap:12px;align-items:center}
+.ph{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:1.05rem}
+.x{background:none;border:0;touch-action:manipulation;color:var(--fg);font-size:1.2rem;cursor:pointer;padding:4px 8px}
+.lbl{font-size:.8rem;color:var(--muted);margin-bottom:-6px}
+/* Keep settings physically stable when the interface language changes. */
+.ph{direction:ltr}
+.panel .seg{display:flex;width:min(100%,390px);margin:0;direction:ltr !important;flex-direction:row-reverse !important;unicode-bidi:isolate}
+.panel .seg button{flex:1 1 0;min-width:0;white-space:normal;text-align:center;padding:8px 8px}
+#segL{direction:ltr !important;flex-direction:row-reverse !important}
+.btn.on{border-color:var(--accent);color:var(--accent)}
+@media (max-width:640px){
+.tip{display:none}
+.sum{margin:0}
+:root{--cw:min(44vw,172px);--top:calc(var(--cw) + 12px)}
+body{align-items:flex-start;justify-content:flex-start;padding:0 max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));min-height:100vh;min-height:100dvh}
+.wrap{flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:10px}
+.side{display:flex;flex-direction:column;align-items:stretch}
+.clock{width:var(--cw);margin:0 auto;position:relative;top:auto;z-index:3;background:var(--bg);padding:8px 0 4px;order:-2}
+.clock svg{filter:none}
+.answer{order:-1;position:relative;top:auto;z-index:2;min-height:64px;padding:12px 14px;box-shadow:0 0 0 6px var(--bg),0 8px 0 6px var(--bg)}
+.answer .de{font-size:1.25rem}
+.cover{font-size:.95rem}
+.side h1,.side .hint{margin:0}
+.side h1{font-size:1.05rem;margin-top:4px}
+.hint{font-size:.82rem}
+.seg{align-self:center;margin:0}
+.seg button{padding:7px 12px;font-size:.92rem}
+.rl{margin:0;align-self:center}
+.btn{margin-top:0;align-self:center}
+.typebox,.extras,#rev{margin-top:0}
+.toggles{margin:0}
+.chips{margin:14px 0 0}
+.mini{align-self:center;margin:0}
+.typebox .btn{margin-top:8px}
+}
+@media (max-width:900px) and (max-height:500px){body{align-items:flex-start;justify-content:flex-start;padding:8px 12px 16px}.brandbar{margin-bottom:4px}.brandmark{width:36px;height:36px}.brandname{font-size:1.2rem}.brandtag{font-size:.52rem}.wrap{gap:14px;align-items:center}.clock{width:min(240px,48vh)}.answer{min-height:72px}.panel{max-height:94dvh}}
+@media (max-width:900px) and (max-height:500px){.side{width:min(100%,560px)}.brandbar{padding-left:48px;padding-right:48px}}
+html.ios body{overscroll-behavior-y:auto}
+html.ios .clock,html.ios .answer{position:relative;top:auto}
+html.ios input,html.ios button{font-size:16px}
+html.ios .panel{max-height:calc(100vh - 32px);max-height:calc(100svh - 32px);max-height:calc(100dvh - 32px)}
+html.ios-standalone .brandbar{padding-top:calc(7px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Final mobile layout hardening: keep a deterministic normal document flow across Chromium/WebKit/Safari. */
+@media (max-width:640px){
+  html,body{overflow-x:hidden}
+  body{align-items:flex-start;justify-content:flex-start}
+  .wrap{display:flex;flex-direction:column;direction:initial;align-items:stretch;justify-content:flex-start;gap:10px}
+  .side{display:flex !important;flex-direction:column !important;align-items:stretch !important;min-width:0 !important;flex:0 1 auto !important}
+  .clock{position:relative !important;top:auto !important;order:0 !important;width:var(--cw) !important;margin:0 auto !important;background:transparent !important}
+  .answer{position:relative !important;top:auto !important;order:0 !important;margin:0 !important;box-shadow:none !important;min-height:64px}
+  .side h1{order:1 !important;font-size:1.05rem !important;margin:4px 0 0 !important}
+  .side .hint.tip{display:none !important}
+  .sum{order:2 !important;margin:0 !important;white-space:normal !important;overflow:visible !important;line-height:1.5 !important;text-align:center !important;min-height:1.4em}
+  #live{order:1 !important}
+  #chips{order:2 !important;margin:14px 0 0 !important}
+  #score{order:3 !important;margin:0 !important}
+  #extras,#rev{order:4 !important;margin-top:0 !important}
+  #typebox{order:5 !important;margin-top:0 !important}
+  .typebox input{min-height:48px}
+  .btn{min-height:44px}
+}
+
+/* Final spacing pass: one consistent vertical rhythm for every practice mode. */
+@media (max-width:640px){
+  .side h1{margin:4px 0 4px !important}
+  #score{min-height:0 !important;line-height:1.4 !important}
+  #live{margin-top:4px !important}
+  #extras,#rev,#typebox{margin-top:12px !important}
+  #rev .opts{margin-top:0 !important}
+  #typebox{display:block}
+  #typebox[hidden],#extras[hidden],#rev[hidden]{display:none !important}
+  .typebox input{display:block;width:100%;min-height:48px}
+  .typebox .btn{margin-top:8px !important}
+}
+
+/* Arabic settings: checkbox visually sits on the left of the sentence. */
+html[dir="rtl"] .rl{direction:ltr !important;flex-direction:row-reverse !important}
+html[dir="rtl"] .rl span{direction:rtl;unicode-bidi:plaintext}
+html[dir="ltr"] .rl{direction:ltr !important;flex-direction:row-reverse !important}
+html[dir="ltr"] .rl span{direction:ltr;unicode-bidi:isolate}
+html[lang="en"] .rev-grid button,html[lang="de"] .rev-grid button{direction:ltr;unicode-bidi:isolate}
+@media (max-width:360px){
+  .brandbar{padding-left:48px;padding-right:48px}
+  .brandname{font-size:1.2rem}
+  .brandtag{font-size:.54rem;letter-spacing:.11em}
+  .toggles{gap:8px 12px}
+  .rl{font-size:.78rem}
+  .rl input[type="checkbox"]{width:17px;height:17px;flex-basis:17px}
+}
+@media (min-width:641px){
+  .side{min-width:0}
+}
+
+/* ============================================================
+   6. SHORT-VIEWPORT LAPTOP / DESKTOP
+   ============================================================ */
+/* Short-viewport desktop/laptop mode: keep the resume control in the visible workspace without forcing page scroll. */
+@media (min-width:641px) and (max-height:850px){
+  body{justify-content:flex-start;padding-top:clamp(12px,2.5vh,24px);padding-bottom:20px}
+  .brandbar{margin-bottom:clamp(7px,1.5vh,14px)}
+  .brandmark{width:56px;height:56px}
+  .brandname{font-size:clamp(1.35rem,3vw,1.9rem)}
+  .brandtag{margin-top:4px;font-size:.61rem}
+  .wrap{gap:clamp(26px,3vw,34px);max-width:940px;flex-direction:row-reverse;direction:ltr}
+  .clock{width:min(360px,46vh)}
+  .side{flex-basis:500px}
+  .answer{max-width:480px;align-self:center;width:100%;min-height:64px;padding:14px 12px}
+  h1{font-size:1.08rem;margin-bottom:6px}
+  .hint{font-size:.82rem;margin-bottom:10px}
+  .answer{padding:14px 12px;min-height:64px}
+  .answer .de{font-size:1.34rem}
+  .chips{margin:12px 0 5px;gap:9px}
+  .chip{padding:6px 6px;font-size:.74rem}
+  .chip b{font-size:1.3rem}
+  .chip small{font-size:.68rem}
+  .typebox{margin-top:10px}
+  .typebox .extras{margin-top:7px}
+  .extras{font-size:.86rem;line-height:1.6}
+  .btn{margin-top:9px;padding:7px 15px}
+  #live{margin-top:10px}
+}
+
+@media (min-width:641px) and (max-height:700px){
+  body{padding-top:8px}
+  .brandbar{margin-bottom:4px}
+  .brandmark{width:46px;height:46px}
+  .brandname{font-size:1.35rem}
+  .brandtag{font-size:.54rem}
+  .wrap{gap:22px;flex-direction:row-reverse;direction:ltr}
+  .clock{width:min(350px,45vh)}
+  .answer{min-height:70px;padding:14px 14px}
+  .answer .de{font-size:1.2rem}
+  .chips{margin:8px 0 3px}
+  .chip{padding:5px}
+  .hint{margin-bottom:5px}
+  #live{margin-top:7px}
+}
+
+
+
+@media (min-width:641px) and (max-height:850px){
+  .rev-prefs{margin-top:10px;gap:6px}
+  .rev-grid{gap:6px}
+  .rev-grid button{padding:7px 5px;font-size:.78rem}
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit}
+img,svg{max-width:100%}
+@supports (height: 100svh){ body{min-height:100svh} }
+@supports not (height: 100dvh){ body{min-height:100vh} }
+
+/* Laptop visual balance: keep the answer block and clock closer as one composition. */
+@media (min-width:641px) and (min-height:701px) and (max-height:900px){
+  body{
+    justify-content:center;
+    padding-top:clamp(16px,3vh,28px);
+    padding-bottom:clamp(16px,3vh,28px);
+  }
+  .brandbar{margin-bottom:clamp(8px,1.8vh,16px)}
+  .wrap{
+    display:grid;
+    grid-template-columns:500px 360px;
+    gap:24px;
+    align-items:center;
+    justify-content:center;
+    max-width:884px;
+    flex-wrap:nowrap;
+  }
+  .side{grid-column:1;grid-row:1;width:500px;flex:none}
+  .clock{grid-column:2;grid-row:1;width:360px;margin:0}
+  .answer{min-height:72px;padding:14px 14px}
+}
+
+
+/* Final responsive balance: keep the main composition side-by-side on desktop displays,
+   while allowing tablets/phones to use the compact vertical flow. */
+@media (min-width:960px){
+  .wrap{
+    display:grid;
+    grid-template-columns:520px clamp(340px,23vw,390px);
+    gap:30px;
+    align-items:center;
+    justify-content:center;
+    max-width:940px;
+    flex-wrap:nowrap;
+    direction:ltr;
+  }
+  .side{
+    grid-column:1;
+    grid-row:1;
+    width:520px;
+    max-width:520px;
+    min-width:0;
+    flex:none;
+  }
+  .answer{
+    max-width:440px;
+    width:100%;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .clock{
+    grid-column:2;
+    grid-row:1;
+    width:100%;
+    max-width:none;
+    margin:0;
+  }
+}
+
+@media (min-width:641px) and (max-width:959px){
+  .wrap{
+    flex-direction:column;
+    flex-wrap:nowrap;
+    align-items:center;
+    gap:14px;
+    max-width:620px;
+  }
+  .side{width:min(100%,560px);min-width:0;flex:none}
+  .clock{width:min(360px,72vw);margin:0 auto}
+}
+
+/* Responsive reading size: the instructional text and revealed explanation stay readable
+   from normal laptops through large desktop monitors. */
+@media (min-width:641px){
+  .hint.tip{font-size:clamp(.92rem,.85vw,1.06rem);line-height:1.55}
+  .sum{font-size:clamp(.86rem,.8vw,1rem);line-height:1.55}
+  .extras{font-size:clamp(.94rem,.85vw,1.06rem);line-height:1.8}
+}
+
+@media (max-width:640px){
+  .sum{font-size:.86rem;line-height:1.5}
+  .extras{font-size:.92rem;line-height:1.65}
+}
+
+/* Final desktop answer-panel height adjustment only. */
+@media (min-width:960px) and (min-height:701px) and (max-height:900px){
+  .answer{height:54px;min-height:0;padding:0 12px}
+}
+
+/* V7: explicit 24-inch/desktop answer-box sizing.
+   Keep the desktop answer box compact without changing its width or any other layout element. */
+@media (min-width:960px) and (min-height:701px){
+  .answer{
+    width:440px !important;
+    max-width:440px !important;
+    height:64px !important;
+    min-height:64px !important;
+    max-height:64px !important;
+    padding:0 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    flex:none !important;
+  }
+}
+
+/* Keep each reverse-difficulty emoji beside its label in every language. */
+.rev-grid button{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:center;gap:.3em;white-space:nowrap;unicode-bidi:isolate}
+.rev-grid button .rev-emoji{display:inline-block;flex:0 0 auto;line-height:1}
+.rev-grid button .rev-label{display:inline-block;flex:0 1 auto;min-width:0;white-space:nowrap}
+@media (max-width:430px){
+  .rev-grid button{gap:2px;font-size:.66rem;padding:8px 2px;white-space:nowrap}
+}
+
+
+/* v102.6: prevent long localized difficulty labels from overflowing adjacent buttons.
+   Two columns give every level enough width while preserving RTL difficulty order. */
+#revSeg{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+  width:100%;
+}
+#revSeg > button{
+  min-width:0;
+  width:100%;
+  min-height:42px;
+  padding:9px 12px;
+  font-size:.84rem;
+  line-height:1.2;
+  white-space:nowrap;
+}
+#revSeg > button .rev-emoji{
+  flex:0 0 auto;
+}
+#revSeg > button .rev-label{
+  flex:0 1 auto;
+  min-width:0;
+  white-space:nowrap;
+}
+@media (max-width:430px){
+  #revSeg{gap:7px !important;}
+  #revSeg > button{padding:8px 10px;font-size:.8rem;}
+}
+
+/* ============================================================
+   v102.7 RESPONSIVE LAYOUT GUARDRAILS
+   Final override layer: preserves the existing UI and behavior,
+   while making sizing predictable from 320px phones to desktop.
+   ============================================================ */
+html,
+body {
+  width: 100%;
+  min-width: 0;
+}
+
+body {
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
+}
+
+.brandbar,
+.brandcopy,
+.wrap,
+.side,
+.answer,
+.typebox,
+.extras,
+#rev,
+#revres,
+.chips,
+.chip {
+  min-width: 0;
+}
+
+.brandbar {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+.brandcopy,
+.brandname,
+.brandtag {
+  max-width: 100%;
+}
+
+.wrap {
+  width: min(100%, 940px);
+  flex: 0 1 auto;
+}
+
+.side {
+  overflow-wrap: break-word;
+}
+
+.answer {
+  max-width: 100%;
+}
+
+.answer .de {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.sum,
+.hint,
+.extras,
+#score,
+#res,
+#revres {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.typebox input {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Phone layout: natural vertical flow and no fixed-height assumptions. */
+@media (max-width: 640px) {
+  body {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-top: max(8px, env(safe-area-inset-top, 0px));
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .brandbar {
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 12px 0 52px;
+    margin-bottom: 10px;
+  }
+
+  .brandmark {
+    width: clamp(40px, 12vw, 52px);
+    height: auto;
+  }
+
+  .brandname {
+    font-size: clamp(1.15rem, 5vw, 1.55rem);
+    line-height: 1.05;
+  }
+
+  .brandtag {
+    font-size: clamp(.48rem, 2vw, .64rem);
+    letter-spacing: clamp(.06em, .3vw, .12em);
+    line-height: 1.2;
+    overflow-wrap: normal;
+  }
+
+  .wrap {
+    display: flex !important;
+    width: 100%;
+    max-width: 100%;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .clock {
+    width: clamp(142px, 47vw, 190px) !important;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 4px 0;
+    flex: 0 1 auto;
+  }
+
+  .side {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 1 auto !important;
+    align-items: stretch;
+  }
+
+  .side h1 {
+    font-size: clamp(1rem, 4.2vw, 1.1rem) !important;
+    line-height: 1.35;
+  }
+
+  .answer {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 60px !important;
+    max-height: none !important;
+    padding: 12px !important;
+    margin-inline: 0 !important;
+  }
+
+  .answer .de {
+    font-size: clamp(1rem, 4.5vw, 1.25rem);
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .seg {
+    max-width: 100%;
+  }
+
+  .seg button {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .chips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    gap: 6px;
+  }
+
+  .chip {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    padding: 7px 3px;
+    font-size: clamp(.66rem, 2.4vw, .8rem);
+    overflow-wrap: anywhere;
+  }
+
+  .chip b {
+    font-size: clamp(1.05rem, 4.5vw, 1.35rem);
+    line-height: 1.25;
+  }
+
+  .chip small {
+    font-size: clamp(.58rem, 2.1vw, .7rem);
+    overflow-wrap: anywhere;
+  }
+
+  .toggles {
+    max-width: 100%;
+    gap: 8px 12px;
+  }
+
+  .rl {
+    min-width: 0;
+    max-width: 100%;
+    font-size: clamp(.76rem, 2.7vw, .9rem);
+  }
+
+  .btn,
+  .seg button,
+  .rev-grid button,
+  .opt,
+  .gear,
+  .x {
+    touch-action: manipulation;
+  }
+
+  .typebox input {
+    width: 100%;
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  .opts {
+    width: 100%;
+    gap: clamp(6px, 2vw, 10px);
+  }
+
+  .opt {
+    width: calc((100% - 20px) / 3);
+    min-width: 0;
+    max-width: 112px;
+  }
+
+  /* Keep the settings panel inside the visible viewport while allowing scroll. */
+  .sheet {
+    padding: max(10px, env(safe-area-inset-top, 0px))
+             max(10px, env(safe-area-inset-right, 0px))
+             max(10px, env(safe-area-inset-bottom, 0px))
+             max(10px, env(safe-area-inset-left, 0px));
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 440px;
+    min-height: 0;
+    max-height: calc(100dvh - 20px);
+    padding: clamp(12px, 3.5vw, 18px);
+    gap: clamp(8px, 2.5vw, 12px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .panel .seg {
+    width: 100%;
+  }
+
+  .panel .seg button {
+    padding: 8px 5px;
+    line-height: 1.25;
+    font-size: clamp(.72rem, 2.8vw, .9rem);
+    overflow-wrap: anywhere;
+  }
+
+  #revSeg > button {
+    min-height: 42px;
+    padding: 8px 6px;
+    font-size: clamp(.72rem, 2.7vw, .84rem);
+  }
+}
+
+/* Very narrow phones, including the 320px-wide iPhone SE (2016) viewport. */
+@media (max-width: 359px) {
+  body {
+    padding-left: max(8px, env(safe-area-inset-left, 0px));
+    padding-right: max(8px, env(safe-area-inset-right, 0px));
+  }
+
+  .brandbar {
+    gap: 7px;
+    padding-left: 48px;
+    padding-right: 6px;
+  }
+
+  .brandmark {
+    width: 38px;
+  }
+
+  .brandname {
+    font-size: 1.12rem;
+  }
+
+  .brandtag {
+    font-size: .47rem;
+    letter-spacing: .055em;
+  }
+
+  .gear {
+    width: 40px;
+    height: 40px;
+    left: calc(8px + env(safe-area-inset-left, 0px));
+  }
+
+  .clock {
+    width: clamp(138px, 47vw, 160px) !important;
+  }
+
+  .answer {
+    border-radius: 12px;
+    padding: 10px !important;
+  }
+
+  .chips {
+    gap: 4px;
+  }
+
+  .chip {
+    padding: 6px 2px;
+  }
+
+  #revSeg {
+    gap: 5px !important;
+  }
+
+  #revSeg > button {
+    gap: 2px;
+    padding: 7px 3px;
+    font-size: .7rem;
+  }
+}
+
+/* Tablet and compact laptop: stack the clock and practice area instead of squeezing. */
+@media (min-width: 641px) and (max-width: 1023px) {
+  body {
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: clamp(14px, 2.5vh, 24px);
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .brandbar {
+    width: min(100%, 680px);
+    margin-bottom: clamp(8px, 1.8vh, 14px);
+  }
+
+  .wrap {
+    display: flex !important;
+    width: min(100%, 680px);
+    max-width: 680px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: clamp(12px, 2.2vw, 22px);
+  }
+
+  .clock {
+    width: min(360px, 52vw) !important;
+    margin: 0 auto;
+  }
+
+  .side {
+    width: min(100%, 620px);
+    max-width: 620px;
+    flex: 0 1 auto !important;
+  }
+
+  .answer {
+    width: min(100%, 520px) !important;
+    height: auto !important;
+    min-height: 64px !important;
+    max-height: none !important;
+    padding: 12px 14px !important;
+    margin-inline: auto !important;
+  }
+
+  .chips {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .chip {
+    min-width: 0;
+  }
+
+  .panel {
+    max-height: calc(100dvh - 32px);
+  }
+}
+
+/* Desktop: retain the existing side-by-side design without fixed overflow. */
+@media (min-width: 1024px) {
+  body {
+    align-items: center;
+    justify-content: center;
+    padding-top: max(18px, env(safe-area-inset-top, 0px));
+    padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .brandbar {
+    width: min(100%, 980px);
+    margin-bottom: clamp(8px, 1.5vh, 14px);
+  }
+
+  .wrap {
+    display: grid !important;
+    width: min(100%, 940px);
+    max-width: 940px;
+    grid-template-columns: minmax(0, 520px) minmax(0, 390px);
+    gap: clamp(20px, 2.2vw, 30px);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
+  .side {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    max-width: 520px;
+    min-width: 0;
+    flex: none;
+  }
+
+  .clock {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100% !important;
+    max-width: 390px;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .answer {
+    width: min(100%, 440px) !important;
+    max-width: 440px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    padding: 0 12px !important;
+    margin-inline: auto !important;
+  }
+}
+
+/* On short landscape screens, prefer scrolling over clipping the practice controls. */
+@media (max-height: 560px) and (min-width: 641px) {
+  body {
+    justify-content: flex-start;
+    padding-top: 10px;
+    padding-bottom: 16px;
+  }
+
+  .brandbar {
+    margin-bottom: 6px;
+  }
+
+  .brandmark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .wrap {
+    gap: 14px;
+  }
+
+  .clock {
+    width: min(300px, 42vh) !important;
+  }
+
+  .panel {
+    max-height: calc(100dvh - 20px);
+  }
+}
+
+@media (max-width: 640px) and (max-height: 440px) {
+  body {
+    padding-top: max(6px, env(safe-area-inset-top, 0px));
+  }
+
+  .brandbar {
+    margin-bottom: 4px;
+  }
+
+  .brandmark {
+    width: 34px;
+  }
+
+  .clock {
+    width: clamp(116px, 34vw, 150px) !important;
+    padding: 0;
+  }
+
+  .wrap {
+    gap: 6px;
+  }
+}
+
+/* v102.8 typography refinement: slightly larger type throughout, with extra
+   attention to readability on phones. Keep layout and application behavior intact. */
+.side h1 {
+  font-size: clamp(1.18rem, 1.4vw, 1.25rem);
+}
+.hint {
+  font-size: .94rem;
+}
+.sum {
+  font-size: .86rem;
+}
+.chip {
+  font-size: .84rem;
+}
+.chip small {
+  font-size: .75rem;
+}
+.lbl {
+  font-size: .86rem;
+}
+
+@media (max-width: 640px) {
+  .brandtag {
+    font-size: clamp(.58rem, 2.2vw, .68rem);
+    letter-spacing: clamp(.045em, .22vw, .09em);
+  }
+
+  .side h1 {
+    font-size: clamp(1.1rem, 4.8vw, 1.25rem) !important;
+    line-height: 1.4;
+  }
+
+  .answer {
+    min-height: 66px !important;
+    padding: 13px 12px !important;
+  }
+
+  .answer .de {
+    font-size: clamp(1.1rem, 5vw, 1.35rem) !important;
+    line-height: 1.4;
+  }
+
+  .cover {
+    font-size: clamp(1rem, 4.2vw, 1.1rem) !important;
+    line-height: 1.4;
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  .sum,
+  #score,
+  #res,
+  #revres {
+    font-size: clamp(.86rem, 3vw, .96rem) !important;
+    line-height: 1.5;
+  }
+
+  .chip {
+    font-size: clamp(.73rem, 2.8vw, .86rem) !important;
+    line-height: 1.3;
+    padding: 8px 3px;
+  }
+
+  .chip b {
+    font-size: clamp(1.15rem, 4.8vw, 1.42rem) !important;
+    line-height: 1.3;
+  }
+
+  .chip small {
+    font-size: clamp(.66rem, 2.6vw, .76rem) !important;
+    line-height: 1.3;
+  }
+
+  .btn {
+    font-size: clamp(1rem, 3.8vw, 1.06rem);
+    line-height: 1.3;
+    padding: 9px 16px;
+  }
+
+  .rl {
+    font-size: clamp(.84rem, 3.2vw, .95rem) !important;
+    line-height: 1.45;
+  }
+
+  .panel {
+    gap: clamp(9px, 2.5vw, 13px);
+  }
+
+  .ph {
+    font-size: 1.12rem;
+  }
+
+  .lbl {
+    font-size: .9rem !important;
+    line-height: 1.35;
+  }
+
+  .panel .seg button {
+    font-size: clamp(.82rem, 3.2vw, .96rem) !important;
+    line-height: 1.3;
+    padding: 9px 5px;
+  }
+
+  #revSeg > button {
+    font-size: clamp(.78rem, 2.9vw, .88rem) !important;
+    line-height: 1.25;
+    padding: 9px 7px;
+  }
+
+  .typebox input {
+    font-size: 16px;
+  }
+
+  .extras {
+    font-size: clamp(.92rem, 3.2vw, 1rem) !important;
+    line-height: 1.75;
+  }
+}
+
+/* On the 320px-wide SE 2016 layout, keep the typography larger without
+   letting button labels or the three compact statistic cards become cramped. */
+@media (max-width: 359px) {
+  .brandtag {
+    font-size: .58rem;
+    letter-spacing: .035em;
+  }
+
+  .side h1 {
+    font-size: 1.1rem !important;
+  }
+
+  .answer .de {
+    font-size: 1.1rem !important;
+  }
+
+  .chip {
+    padding: 7px 2px;
+    font-size: .73rem !important;
+  }
+
+  .chip b {
+    font-size: 1.15rem !important;
+  }
+
+  .panel .seg button {
+    font-size: .82rem !important;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+}
+
+
+
+/* Keep the always-German learning hint readable in RTL interface languages. */
+
+/* ============================================================
+   v102.9: centered brand, clearer phone typography, and
+   language-aware time-difficulty order.
+   These are visual/layout rules only; application logic is unchanged.
+   ============================================================ */
+
+/* Center the logo and wordmark as one group. The gear stays independently fixed. */
+@media (max-width: 640px) {
+  .brandbar {
+    padding-left: 12px;
+    padding-right: 12px;
+    justify-content: center;
+  }
+
+  .brandmark {
+    width: clamp(40px, 12vw, 52px);
+    height: auto;
+  }
+
+  .brandname {
+    font-size: clamp(1.18rem, 5.1vw, 1.58rem);
+  }
+
+  .brandtag {
+    font-size: clamp(.60rem, 2.35vw, .70rem);
+    letter-spacing: clamp(.035em, .18vw, .08em);
+  }
+
+  /* Increase type size without adding margin or padding. */
+  .side h1 {
+    font-size: clamp(1.18rem, 5vw, 1.32rem) !important;
+  }
+
+  .answer .de {
+    font-size: clamp(1.2rem, 5.4vw, 1.45rem) !important;
+  }
+
+  .cover {
+    font-size: clamp(1.06rem, 4.5vw, 1.2rem) !important;
+  }
+
+  .sum,
+  #score,
+  #res,
+  #revres {
+    font-size: clamp(.90rem, 3.3vw, 1rem) !important;
+  }
+
+  .chip {
+    font-size: clamp(.78rem, 3vw, .92rem) !important;
+  }
+
+  .chip b {
+    font-size: clamp(1.2rem, 5vw, 1.45rem) !important;
+  }
+
+  .chip small {
+    font-size: clamp(.72rem, 2.9vw, .82rem) !important;
+  }
+
+  .btn {
+    font-size: clamp(1.04rem, 4vw, 1.12rem);
+  }
+
+  /* Settings text is larger; existing margins and paddings are preserved. */
+  .panel .ph {
+    font-size: 1.2rem;
+  }
+
+  .panel .lbl {
+    font-size: 1rem !important;
+    line-height: 1.35;
+  }
+
+  .panel .seg button {
+    font-size: clamp(.94rem, 4vw, 1.02rem) !important;
+    line-height: 1.3;
+  }
+
+  #revSeg > button {
+    font-size: clamp(.86rem, 3.6vw, .98rem) !important;
+    line-height: 1.3;
+  }
+
+  .panel .rl,
+  #rst {
+    font-size: 1rem !important;
+  }
+
+  /* Two columns give the four time choices readable labels on phones. */
+  #seg {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+    width: 100%;
+  }
+}
+
+/* Time options follow the natural reading direction: Arabic from the right,
+   English and German from the left. DOM order is hours → quarter/half → 5 min → 1 min. */
+#seg {
+  direction: rtl !important;
+  flex-direction: row !important;
+}
+
+html[lang="en"] #seg,
+html[lang="de"] #seg {
+  direction: ltr !important;
+  flex-direction: row !important;
+}
+
+/* Keep the centered wordmark symmetrical on the narrowest phones too. */
+@media (max-width: 359px) {
+  .brandbar {
+    padding-left: 12px;
+    padding-right: 12px;
+    gap: 7px;
+  }
+
+  .brandmark {
+    width: 38px;
+  }
+
+  .brandname {
+    font-size: 1.18rem;
+  }
+
+  .brandtag {
+    font-size: .60rem;
+    letter-spacing: .025em;
+  }
+}
+
+
+/* ============================================================
+   v102.10: connected difficulty controls and language-aware order.
+   Scoped to settings controls; labels, language, and app logic stay intact.
+   ============================================================ */
+:root {
+  --control-divider: #eceae4;
+}
+
+/* Time difficulty: one connected control with warm-white separators. */
+#seg {
+  gap: 0 !important;
+  border: 1.5px solid var(--control-divider) !important;
+  border-radius: 18px !important;
+  overflow: hidden;
+}
+
+#seg button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+}
+
+#seg button + button {
+  border-inline-start: 1.5px solid var(--control-divider) !important;
+}
+
+/* Clock difficulty: restore four independent buttons in a 2×2 grid. */
+#revSeg {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  direction: rtl !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  width: 100%;
+}
+
+#revSeg > button {
+  min-width: 0;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--muted) !important;
+  border-radius: 12px !important;
+  background: var(--card) !important;
+  color: var(--fg) !important;
+  box-shadow: none !important;
+  transform: none;
+  padding: 9px 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#revSeg > button.on {
+  background: color-mix(in srgb, var(--accent) 18%, var(--card)) !important;
+  color: var(--fg) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent) inset !important;
+}
+
+#revSeg > button:active { transform: none; }
+
+@media (max-width: 430px) {
+  #revSeg { gap: 7px !important; }
+  #revSeg > button { padding: 8px 10px; font-size: .8rem; }
+}
+
+/* English and German: practice mode reads left to right. Arabic is untouched. */
+html[lang="en"] #seg3,
+html[lang="de"] #seg3 {
+  direction: ltr !important;
+  flex-direction: row !important;
+}
+
+/* Clock-difficulty grid follows the reading direction for EN/DE. */
+html[lang="en"] #revSeg,
+html[lang="de"] #revSeg {
+  direction: ltr !important;
+}
+
+/* Keep the time-difficulty grid's separators centered on small screens. */
+@media (max-width: 640px) {
+  #seg button + button {
+    border-inline-start: 0 !important;
+  }
+
+  #seg button:nth-child(odd) {
+    border-inline-end: 1.5px solid var(--control-divider) !important;
+  }
+
+  #seg button:nth-child(-n + 2) {
+    border-bottom: 1.5px solid var(--control-divider) !important;
+  }
+}
+
+/* Short phone viewports should scroll the settings sheet instead of shrinking
+   its controls below a comfortable touch/readability size. */
+.panel > * {
+  flex-shrink: 0;
+}
+
+
+/* v102.11: local Type/Reverse progress window beside Reset Stats. */
+.settings-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  width: min(100%, 390px);
+}
+
+.settings-actions .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.progress-popup {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(72dvh, 440px);
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--muted);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .32);
+}
+
+.progress-popup[hidden] { display: none; }
+
+.progress-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--fg);
+  font-size: 1rem;
+}
+
+.progress-popup-head .x { flex: 0 0 auto; }
+
+.progress-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.progress-mode + .progress-mode {
+  border-top: 1px solid color-mix(in srgb, var(--muted) 55%, transparent);
+  padding-top: 9px;
+}
+
+.progress-mode h3 {
+  margin: 0 0 2px;
+  color: var(--fg);
+  font-size: .95rem;
+  line-height: 1.3;
+}
+
+.progress-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.35;
+}
+
+.progress-stat span { min-width: 0; overflow-wrap: anywhere; }
+.progress-stat b { flex: 0 0 auto; color: var(--fg); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 640px) {
+  .settings-actions .btn,
+  #progressBtn { font-size: clamp(.88rem, 3.7vw, 1rem) !important; }
+  .progress-popup { padding: 10px; gap: 8px; }
+  .progress-stat { font-size: clamp(.82rem, 3.2vw, .9rem); }
+}
+
+
+/* Compact mobile instruction: clock above, answer box below. */
+@media (max-width:640px){
+  .side .tip-mobile{
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+    gap:.38em;
+    order:-1 !important;
+    margin:0 0 2px !important;
+    font-size:clamp(.84rem,3.5vw,.96rem);
+    line-height:1.35;
+    white-space:nowrap;
+  }
+  .tip-mobile [data-i18n],.tip-mobile-arrow{unicode-bidi:isolate}
+  .tip-mobile-arrow{
+    direction:ltr;
+    color:var(--accent);
+    font-size:1.08em;
+    font-weight:800;
+    line-height:1;
+  }
+  html[lang="ar"] .tip-mobile{direction:rtl}
+  html[lang="en"] .tip-mobile,html[lang="de"] .tip-mobile{direction:ltr}
+}
+
+/* Responsive audit pass: small tablets, compact laptop windows and large desktops. */
+@media (min-width: 641px) and (max-width: 839px) {
+  .brandbar {
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 680px;
+    min-width: 0;
+    gap: clamp(12px, 2.5vw, 22px);
+  }
+
+  .side {
+    width: min(100%, 640px) !important;
+    max-width: 640px !important;
+    min-width: 0 !important;
+  }
+
+  .answer {
+    width: min(100%, 600px) !important;
+    max-width: 600px !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Short, landscape laptop windows can use two columns without a tall scroll. */
+@media (min-width: 760px) and (max-width: 839px) and (max-height: 760px) {
+  body {
+    justify-content: flex-start;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .brandbar { margin-bottom: 6px; }
+
+  .wrap {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .85fr) !important;
+    gap: 20px;
+    max-width: 1120px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .side {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .clock {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, clamp(250px, 37vw, 420px), 52vh) !important;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .answer {
+    width: min(100%, 440px) !important;
+    max-width: 440px !important;
+  }
+}
+
+/* Side-by-side practice layout starts when there is enough horizontal room. */
+@media (min-width: 840px) {
+  .brandbar {
+    width: min(1120px, 100%);
+    max-width: 1120px;
+  }
+
+  .wrap {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .85fr) !important;
+    gap: clamp(20px, 2.4vw, 36px);
+    width: min(100%, 1120px);
+    max-width: 1120px;
+    min-width: 0;
+    flex-wrap: nowrap;
+    direction: ltr;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .side {
+    grid-column: 1;
+    grid-row: 1;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    flex: none !important;
+  }
+
+  .clock {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, clamp(280px, 37vw, 420px), 52vh) !important;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .answer {
+    width: min(100%, 440px) !important;
+    max-width: 440px !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Landscape laptop/monitor refinement: keep the typing field proportionate. */
+@media (orientation: landscape) and (min-width: 641px) {
+  .typebox {
+    width: min(100%, 520px);
+    margin-inline: auto;
+  }
+
+  .typebox input {
+    height: 48px;
+    min-height: 0;
+    padding: 0 14px;
+    font-size: 1rem;
+    line-height: 1.2;
+    box-sizing: border-box;
+  }
+}
+/* Respect the hidden state despite the answer card’s display:flex styling. */
+.answer[hidden]{display:none !important}
+
+</style>
+</head>
+<body>
+<header class="brandbar" aria-label="ZeitMeister">
+  <svg class="brandmark" viewBox="0 0 64 64" aria-hidden="true">
+    <path d="M9 20h8" stroke="#1d2433" stroke-width="4" stroke-linecap="round"/>
+    <path d="M6 28h11" stroke="#d5ad3f" stroke-width="4" stroke-linecap="round"/>
+    <path d="M9 36h9" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="33" cy="32" r="23" fill="var(--card)" stroke="var(--fg)" stroke-width="4"/>
+    <circle cx="33" cy="32" r="18" fill="none" stroke="var(--muted)" stroke-width="1.4" opacity=".55"/>
+    <line x1="33" y1="32" x2="33" y2="19" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+    <line x1="33" y1="32" x2="45" y2="36" stroke="var(--fg)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="33" y1="32" x2="33" y2="13" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="33" cy="32" r="3.2" fill="var(--accent)"/>
+  </svg>
+  <div class="brandcopy">
+    <div class="brandname"><span class="zeit">Zeit</span><span class="meister">Meister</span></div>
+    <div class="brandtag">German Time Trainer</div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="clock" id="clock" role="button" tabindex="0" data-i18n-aria="clockA11y">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="94" fill="var(--card)" stroke="var(--fg)" stroke-width="4"/>
+      <g id="ticks"></g>
+      <g id="nums" font-size="15" font-weight="700" text-anchor="middle" fill="var(--fg)" font-family="Arial,sans-serif"></g>
+      <line id="h" x1="100" y1="100" x2="100" y2="58" stroke="var(--fg)" stroke-width="6" stroke-linecap="round"/>
+      <line id="m" x1="100" y1="100" x2="100" y2="34" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+      <line id="s" x1="100" y1="110" x2="100" y2="28" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="100" cy="100" r="5" fill="var(--accent)"/>
+    </svg>
+  </div>
+  <div class="side">
+    <h1 data-i18n="h1"></h1>
+    <p class="hint tip" data-i18n="tip"></p>
+    <p class="hint tip-mobile" data-i18n-aria="tipMobileA11y"><span data-i18n="tipMobileStart"></span><span class="tip-mobile-arrow" aria-hidden="true">↑</span><span data-i18n="tipMobileThen"></span><span class="tip-mobile-arrow" aria-hidden="true">↓</span></p>
+    <div class="sum" id="sum"></div>
+    <div class="answer" id="answer" role="button" tabindex="0" data-i18n-aria="revealA11y">
+      <div class="de" id="de">–</div>
+      <div class="cover" data-i18n="cover"></div>
+    </div>
+    <button class="btn" id="live" data-i18n="live"></button>
+    <div class="chips" id="chips">
+      <div class="chip" id="c-cur"><span data-i18n="chipStreak"></span><b>0</b><small></small></div>
+      <div class="chip" id="c-ten"><span data-i18n="chipTen"></span><b>0</b><small>0/10</small></div>
+      <div class="chip" id="c-best"><span data-i18n="chipBest"></span><b>0</b><small></small></div>
+    </div>
+    <div class="hint" id="score" aria-live="polite"></div>
+    <div class="extras" id="extras" hidden><div id="ex"></div></div>
+    <div id="rev" hidden><div class="opts" id="opts"></div><div id="revres" aria-live="polite"></div><button class="btn" id="nextq" data-i18n="newq"></button></div>
+    <div class="typebox" id="typebox" hidden>
+      <input id="inp" type="text" data-i18n-aria="inputA11y" aria-label="German time answer" placeholder="Es ist ..." maxlength="120" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button class="btn" id="chk" data-i18n="chk"></button>
+      <div id="res" aria-live="polite"></div>
+    </div>
+  </div>
+</div>
+<button class="gear" id="gear" data-i18n-aria="settings" data-i18n-title="settings">⚙️</button>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="panel">
+    <div class="ph"><b id="settingsTitle" data-i18n="settings"></b><button class="x" id="close" data-i18n-aria="close">✕</button></div>
+    <div class="lbl" data-i18n="lblLang"></div>
+    <div class="seg" id="segL">
+      <button data-lang="ar">العربية</button>
+      <button data-lang="en">English</button>
+      <button data-lang="de">Deutsch</button>
+    </div>
+    <div class="lbl" data-i18n="lblStyle"></div>
+    <div class="seg" id="seg2">
+      <button data-style="inf" class="on" data-i18n="infLabel"></button>
+      <button data-style="off" data-i18n="offLabel"></button>
+    </div>
+    <div class="lbl" data-i18n="lblMode"></div>
+    <div class="seg" id="seg3">
+      <button data-mode="read" class="on" data-i18n="modeRead"></button>
+      <button data-mode="type" data-i18n="modeType"></button>
+      <button data-mode="rev" data-i18n="modeRev"></button>
+    </div>
+    <div class="rev-prefs" id="revPrefs" hidden>
+      <div class="lbl" data-i18n="lblClockLevel"></div>
+      <div class="rev-grid" id="revSeg">
+        <button data-revstyle="numbered-step" class="on" data-i18n="revNormal"></button>
+        <button data-revstyle="blank-step" data-i18n="revMedium"></button>
+        <button data-revstyle="blank-free" data-i18n="revHard"></button>
+        <button data-revstyle="blank-impossible" data-i18n="revImpossible"></button>
+      </div>
+    </div>
+    <div class="lbl" data-i18n="lblTimes"></div>
+    <div class="seg" id="seg">
+      <button data-step="60" data-i18n="stepHour"></button>
+      <button data-step="15" data-i18n="step15"></button>
+      <button data-step="5" class="on" data-i18n="step5"></button>
+      <button data-step="1" data-i18n="step1"></button>
+    </div>
+    <div class="toggles">
+      <label class="hint rl"><span data-i18n="round"></span><input type="checkbox" id="round"></label>
+    </div>
+    <div class="settings-actions">
+      <button type="button" class="btn mini" id="rst" data-i18n="rst"></button>
+      <button type="button" class="btn mini" id="progressBtn" data-i18n="progress" aria-controls="progressPopup" aria-expanded="false"></button>
+    </div>
+    <div class="progress-popup" id="progressPopup" hidden role="region" aria-labelledby="progressTitle">
+      <div class="progress-popup-head">
+        <b id="progressTitle" data-i18n="progressTitle"></b>
+        <button type="button" class="x" id="progressClose" data-i18n-aria="close" data-i18n-title="close">✕</button>
+      </div>
+      <section class="progress-mode" aria-labelledby="progressTypeTitle">
+        <h3 id="progressTypeTitle" data-i18n="progressType"></h3>
+        <div class="progress-stat"><span data-i18n="progressAttempted"></span><b id="progressTypeAttempted">0</b></div>
+        <div class="progress-stat"><span data-i18n="progressCorrect"></span><b id="progressTypeCorrect">0</b></div>
+        <div class="progress-stat"><span data-i18n="progressAccuracy"></span><b id="progressTypeAccuracy">0%</b></div>
+      </section>
+      <section class="progress-mode" aria-labelledby="progressReverseTitle">
+        <h3 id="progressReverseTitle" data-i18n="progressReverse"></h3>
+        <div class="progress-stat"><span data-i18n="progressAttempted"></span><b id="progressReverseAttempted">0</b></div>
+        <div class="progress-stat"><span data-i18n="progressCorrect"></span><b id="progressReverseCorrect">0</b></div>
+        <div class="progress-stat"><span data-i18n="progressAccuracy"></span><b id="progressReverseAccuracy">0%</b></div>
+      </section>
+    </div>
+  </div>
+</div>
+<script>
+/*
+ * ZeitMeister — German Time Trainer
+ * Main application logic
+ *
+ * Main sections in this file:
+ * 1. UI translations
+ * 2. DOM references and application state
+ * 3. Clock rendering and difficulty
+ * 4. German time-expression logic
+ * 5. Practice controls and answer checking
+ * 6. Reverse mode
+ * 7. Settings panel and accessibility
+ * 8. Settings summary and mode switching
+ * 9. Language application and startup
+ */
+
+// ============================================================
+// 1. UI TRANSLATIONS
+// ============================================================
+const I18N={
+ar:{title:"ZeitMeister — الساعة بالألماني",h1:"كام الساعة بالألماني؟",tip:"اضغط على الساعة عشان توقفها على وقت، وبعدها اضغط على المربع عشان تشوف الإجابة",tipMobileStart:"اضغط على الساعة",tipMobileThen:"ثم",tipMobileA11y:"اضغط على الساعة، ثم اضغط على مربع الإجابة",cover:"اضغط هنا لإظهار الإجابة",chipStreak:"🔥 السلسلة",chipTen:"🔟 جولات",chipBest:"🏆 أفضل سلسلة",inRow:"ورا بعض",newq:"سؤال جديد",chk:"تحقق من إجابتي",live:"▶ شغّل الساعة تاني",settings:"الإعدادات",close:"إغلاق",clockA11y:"الساعة — اضغط لإيقافها وتوليد سؤال",revealA11y:"إظهار أو إخفاء الإجابة",clockOption:"اختيار الساعة {n}",inputA11y:"اكتب إجابتك بالألماني",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"اللغة",lblStyle:"الصيغة",lblMode:"طريقة التدريب",lblClockLevel:"مستوى الساعة",revNormal:"🟢 عادي",revMedium:"🟡 متوسط",revHard:"🔴 صعب",revImpossible:"💀 المستحيل",lblTimes:"الأوقات",modeRead:"شوف الإجابة",modeType:"اكتب الإجابة",modeRev:"بالعكس",stepHour:"ساعة عشوائية",step5:"كل 5 دقايق",step1:"كل دقيقة",step15:"ربع / نصف",stepShort15:"ربع / نصف",round:"جولة من 10 أسئلة",roundShort:"جولة 10",rst:"تصفير الإحصائيات",rstConfirm:"اضغط تاني للتأكيد",progress:"التقدّم",progressTitle:"إجمالي التقدّم",progressType:"وضع الكتابة",progressReverse:"وضع بالعكس",progressAttempted:"الأسئلة المجاب عنها",progressCorrect:"الإجابات الصحيحة",progressAccuracy:"نسبة الإجابات الصحيحة",score:"النتيجة: {ok}/{n}",roundDone:"خلصت الجولة: {ok}/10",mistakes:" — الأخطاء: ",clickFirst:"اضغط على الساعة الأول عشان تقف على وقت",ok:"✔ صح!",okAlt:"✔ صح! (صيغة تانية مقبولة)",bad:"✘ مش مظبوط — الإجابة الصح ظاهرة فوق",revBad:"✘ غلط — الساعة الصح معلّمة بالأخضر"},
+en:{title:"ZeitMeister — German Time Trainer",h1:"What time is it?",tip:"Click the clock to stop it, then reveal the answer",tipMobileStart:"Tap the clock",tipMobileThen:"then",tipMobileA11y:"Tap the clock, then tap the answer box",cover:"Tap to reveal the answer",chipStreak:"🔥 Streak",chipTen:"🔟 Rounds",chipBest:"🏆 Best streak",inRow:"in a row",newq:"New question",chk:"Check answer",live:"▶ Resume the clock",settings:"Settings",close:"Close",clockA11y:"Clock — press to stop it and generate a question",revealA11y:"Show or hide the answer",clockOption:"Clock {n}",inputA11y:"Type your answer in German",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"Language",lblStyle:"Style",lblMode:"Practice mode",lblClockLevel:"Clock difficulty",revNormal:"🟢 Normal",revMedium:"🟡 Medium",revHard:"🔴 Hard",revImpossible:"💀 Impossible",lblTimes:"Time difficulty",modeRead:"Read",modeType:"Type",modeRev:"Reverse",stepHour:"Random hour",step5:"Every 5 min",step1:"Every minute",step15:"Quarter / half",stepShort15:"Quarter / half",round:"10-question round",roundShort:"10-question round",rst:"Reset stats",rstConfirm:"Tap again to confirm",progress:"Progress",progressTitle:"Practice progress",progressType:"Type mode",progressReverse:"Reverse mode",progressAttempted:"Questions answered",progressCorrect:"Correct answers",progressAccuracy:"Accuracy",score:"Score: {ok}/{n}",roundDone:"Round complete: {ok}/10",mistakes:" — Mistakes: ",clickFirst:"Click the clock first to stop it at a time",ok:"✔ Correct!",okAlt:"✔ Correct! (another accepted form)",bad:"✘ Not quite — the correct answer is shown above",revBad:"✘ Incorrect — the correct clock is highlighted in green"},
+de:{title:"ZeitMeister — Uhrzeit-Trainer",h1:"Wie spät ist es?",tip:"Klicke auf die Uhr, um sie anzuhalten, und decke dann die Antwort auf",tipMobileStart:"Tippe auf die Uhr",tipMobileThen:"dann",tipMobileA11y:"Tippe auf die Uhr und dann auf das Antwortfeld",cover:"Klicken, um die Antwort aufzudecken",chipStreak:"🔥 Serie",chipTen:"🔟 Runden",chipBest:"🏆 Beste Serie",inRow:"in Folge",newq:"Neue Frage",chk:"Antwort prüfen",live:"▶ Uhr weiterlaufen lassen",settings:"Einstellungen",close:"Schließen",clockA11y:"Uhr — anklicken, um sie anzuhalten und eine Frage zu erzeugen",revealA11y:"Antwort ein- oder ausblenden",clockOption:"Uhr {n}",inputA11y:"Uhrzeit auf Deutsch eingeben",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"Sprache",lblStyle:"Sprachform",lblMode:"Übungsmodus",lblClockLevel:"Schwierigkeitsgrad der Uhr",revNormal:"🟢 Normal",revMedium:"🟡 Mittel",revHard:"🔴 Schwer",revImpossible:"💀 Unmöglich",lblTimes:"Schwierigkeitsgrad",modeRead:"Ansehen",modeType:"Eingeben",modeRev:"Umgekehrt",stepHour:"Zufällige Stunde",step5:"Alle 5 Min.",step1:"Jede Min.",step15:"Viertel / halb",stepShort15:"Viertel / halb",round:"10er-Runde",roundShort:"10er-Runde",rst:"Statistik zurücksetzen",rstConfirm:"Zum Bestätigen erneut klicken",progress:"Fortschritt",progressTitle:"Übungsfortschritt",progressType:"Eingabemodus",progressReverse:"Umgekehrter Modus",progressAttempted:"Beantwortete Fragen",progressCorrect:"Richtige Antworten",progressAccuracy:"Trefferquote",score:"Ergebnis: {ok}/{n}",roundDone:"Runde abgeschlossen: {ok}/10",mistakes:" — Fehler: ",clickFirst:"Klicke zuerst auf die Uhr, um sie anzuhalten",ok:"✔ Richtig!",okAlt:"✔ Richtig! (andere gültige Form)",bad:"✘ Noch nicht — die richtige Antwort steht oben",revBad:"✘ Falsch — die richtige Uhr ist grün markiert"}
+};
+const storageGet=(k,fallback)=>{try{const v=localStorage.getItem(k);return v===null?fallback:v;}catch(_){return fallback;}};
+const storageSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(_) {}};
+const storageRemove=k=>{try{localStorage.removeItem(k);}catch(_) {}};
+const safeNonNegativeInt=(v,fallback=0)=>{const n=Number(v);return Number.isFinite(n)&&n>=0?Math.floor(n):fallback;};
+let lang="ar";
+const sv=storageGet("gc_lang","");if(sv&&I18N[sv])lang=sv;
+const t=(k,v)=>{
+  const primary=I18N[lang]&&I18N[lang][k];
+  const fallback=I18N.en&&I18N.en[k];
+  let x=primary!=null?primary:(fallback!=null?fallback:k);
+  if(v)for(const q in v)x=x.split("{"+q+"}").join(v[q]);
+  return x;
+};
+// ============================================================
+// 2. DOM REFERENCES & APPLICATION STATE
+// ============================================================
+const NS="http://www.w3.org/2000/svg";
+const ticks=document.getElementById("ticks"),nums=document.getElementById("nums");
+for(let i=0;i<60;i++){
+  const a=i*6*Math.PI/180,big=i%5===0,r1=big?80:86,r2=90;
+  const l=document.createElementNS(NS,"line");
+  l.setAttribute("x1",100+r1*Math.sin(a));l.setAttribute("y1",100-r1*Math.cos(a));
+  l.setAttribute("x2",100+r2*Math.sin(a));l.setAttribute("y2",100-r2*Math.cos(a));
+  l.setAttribute("stroke","var(--fg)");l.setAttribute("stroke-width",big?2.5:1);
+  ticks.appendChild(l);
+}
+for(let n=1;n<=12;n++){
+  const a=n*30*Math.PI/180,t=document.createElementNS(NS,"text");
+  t.setAttribute("x",100+66*Math.sin(a));t.setAttribute("y",100-66*Math.cos(a)+5);
+  t.textContent=n;nums.appendChild(t);
+}
+const H=document.getElementById("h"),M=document.getElementById("m"),S=document.getElementById("s");
+const answer=document.getElementById("answer"),de=document.getElementById("de");
+let live=true,raf=null,animRaf=null,step=5,style='inf',curH=null,curM=null,mode='read',revStyle='numbered-step';
+const savedStyle=storageGet('gc_style','inf');
+style=savedStyle==='off'?'off':'inf';
+const savedStep=+(storageGet('gc_step','5'));
+step=[1,5,15,60].includes(savedStep)?savedStep:5;
+const savedMode=storageGet('gc_mode','read');
+mode=['read','type','rev'].includes(savedMode)?savedMode:'read';
+const savedRevStyle=storageGet('gc_revstyle','numbered-step');
+revStyle=['numbered-step','blank-step','blank-free','blank-impossible'].includes(savedRevStyle)?savedRevStyle:'numbered-step';
+const inp=document.getElementById('inp'),res=document.getElementById('res');
+const clearTry=()=>{inp.value='';res.textContent='';};
+let graded=false,roundDone=false,score={n:0,ok:0,wrong:[]},correctKey=0;
+const $=id=>document.getElementById(id);
+const extras=$('extras'),ex=$('ex'),rev=$('rev'),opts=$('opts'),revres=$('revres'),scoreEl=$('score'),roundEl=$('round'),typebox=$('typebox');
+let streak=0,best=0,completedRounds=0;
+streak=safeNonNegativeInt(storageGet("gc_streak",0),0);
+best=safeNonNegativeInt(storageGet("gc_best",0),0);
+completedRounds=safeNonNegativeInt(storageGet("gc_completed_rounds",0),0);
+const progressStorageKeys={
+  type:{attempted:"gc_progress_type_attempted",correct:"gc_progress_type_correct"},
+  rev:{attempted:"gc_progress_rev_attempted",correct:"gc_progress_rev_correct"}
+};
+const practiceProgress={
+  type:{attempted:safeNonNegativeInt(storageGet(progressStorageKeys.type.attempted,0),0),correct:0},
+  rev:{attempted:safeNonNegativeInt(storageGet(progressStorageKeys.rev.attempted,0),0),correct:0}
+};
+practiceProgress.type.correct=Math.min(practiceProgress.type.attempted,safeNonNegativeInt(storageGet(progressStorageKeys.type.correct,0),0));
+practiceProgress.rev.correct=Math.min(practiceProgress.rev.attempted,safeNonNegativeInt(storageGet(progressStorageKeys.rev.correct,0),0));
+const cCur=$("c-cur"),cTen=$("c-ten"),cBest=$("c-best");
+const setChip=(c,v,sm)=>{c.querySelector("b").textContent=v;c.querySelector("small").textContent=sm;};
+function renderProgress(){
+  for(const modeKey of ["type","rev"]){
+    const label=modeKey==="type"?"Type":"Reverse";
+    const stats=practiceProgress[modeKey];
+    const percent=stats.attempted?Math.round(stats.correct/stats.attempted*100):0;
+    $("progress"+label+"Attempted").textContent=String(stats.attempted);
+    $("progress"+label+"Correct").textContent=String(stats.correct);
+    $("progress"+label+"Accuracy").textContent=percent+"%";
+  }
+}
+function recordPracticeProgress(ok){
+  if(mode!=="type"&&mode!=="rev")return;
+  const stats=practiceProgress[mode],keys=progressStorageKeys[mode];
+  stats.attempted++;
+  if(ok)stats.correct++;
+  storageSet(keys.attempted,String(stats.attempted));
+  storageSet(keys.correct,String(stats.correct));
+  renderProgress();
+}
+function resetPracticeProgress(){
+  for(const modeKey of ["type","rev"]){
+    practiceProgress[modeKey].attempted=0;
+    practiceProgress[modeKey].correct=0;
+    storageRemove(progressStorageKeys[modeKey].attempted);
+    storageRemove(progressStorageKeys[modeKey].correct);
+  }
+  renderProgress();
+}
+function renderStreak(pop){
+  setChip(cCur,streak,t("inRow"));
+  setChip(cTen,completedRounds,(roundEl&&roundEl.checked?score.n:0)+"/10");
+  setChip(cBest,best,t("inRow"));
+  if(pop){cTen.classList.remove("pop");void cTen.offsetWidth;cTen.classList.add("pop");}
+}
+function bump(ok){
+  if(ok){streak++;storageSet("gc_streak",String(streak));if(streak>best){best=streak;storageSet("gc_best",best);}}
+  else {streak=0;storageSet("gc_streak","0");}
+  renderStreak(ok&&streak%10===0);
+}
+let rstT=null;
+$("rst").addEventListener("click",()=>{
+  const b=$("rst");
+  if(rstT){clearTimeout(rstT);rstT=null;streak=0;best=0;completedRounds=0;score={n:0,ok:0,wrong:[]};roundDone=false;scoreEl.textContent="";res.textContent="";revres.textContent="";storageRemove("gc_streak");storageRemove("gc_best");storageRemove("gc_completed_rounds");storageRemove("gc_nonum");resetPracticeProgress();renderStreak();b.textContent=t("rst");return;}
+  b.textContent=t("rstConfirm");rstT=setTimeout(()=>{rstT=null;b.textContent=t("rst");},3000);
+});
+roundEl.checked=storageGet("gc_round","0")==="1";
+// ============================================================
+// 3. CLOCK RENDERING & DIFFICULTY
+// ============================================================
+function applyClockLevel(){
+  const numbered=revStyle==="numbered-step";
+  const showTicks=revStyle!=="blank-impossible";
+  nums.style.display=numbered?"":"none";
+  ticks.style.display=showTicks?"":"none";
+  // Medium shows all minute marks. Hard shows only the 12 hour markers.
+  [...ticks.children].forEach((el,i)=>{
+    if(revStyle==="blank-free"){
+      if(i%5!==0){
+        el.style.display="none";
+        return;
+      }
+      el.style.display="";
+      el.setAttribute("stroke-width","2.5");
+      const a=i*6*Math.PI/180;
+      el.setAttribute("x1",100+80*Math.sin(a));
+      el.setAttribute("y1",100-80*Math.cos(a));
+    }else{
+      el.style.display="";
+      if(i%5===0){
+        el.setAttribute("stroke-width","2.5");
+        const a=i*6*Math.PI/180;
+        el.setAttribute("x1",100+80*Math.sin(a));
+        el.setAttribute("y1",100-80*Math.cos(a));
+      }else{
+        el.setAttribute("stroke-width","1");
+        const a=i*6*Math.PI/180;
+        el.setAttribute("x1",100+86*Math.sin(a));
+        el.setAttribute("y1",100-86*Math.cos(a));
+      }
+    }
+  });
+  // The impossible level removes every visual aid except the two useful hands.
+  S.style.display=revStyle==="blank-impossible"?"none":"";
+}
+applyClockLevel();
+renderStreak();
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const isIOSStandalone=!!window.navigator.standalone||(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches);
+if(isIOS)document.documentElement.classList.add("ios");
+if(isIOSStandalone)document.documentElement.classList.add("ios-standalone");
+// Clock hand geometry and animation
+const rot=(el,d)=>el.setAttribute("transform",`rotate(${d} 100 100)`);
+function setHands(h,m,s){rot(H,(h%12)*30+m*0.5);rot(M,m*6+s*0.1);rot(S,s*6);}
+// ============================================================
+// 4. GERMAN TIME EXPRESSIONS
+// ============================================================
+const hn=["zwölf","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn","elf"];
+const nw=["","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn","elf","zwölf","dreizehn","vierzehn","fünfzehn","sechzehn","siebzehn","achtzehn","neunzehn","zwanzig"];
+const mins=n=>n===1?"eine Minute":nw[n];
+function germanTime(h,m){
+  const cur=hn[h%12],nxt=hn[(h+1)%12];
+  if(m===0)return `Es ist ${h%12===1?"ein":cur} Uhr`;
+  if(m===15)return `Es ist Viertel nach ${cur}`;
+  if(m===30)return `Es ist halb ${nxt}`;
+  if(m===45)return `Es ist Viertel vor ${nxt}`;
+  if(m<=2)return `Es ist kurz nach ${cur}`;
+  if(m===28||m===29)return `Es ist kurz vor halb ${nxt}`;
+  if(m===31||m===32)return `Es ist kurz nach halb ${nxt}`;
+  if(m>=58)return `Es ist kurz vor ${nxt}`;
+  if(m<=20)return `Es ist ${mins(m)} nach ${cur}`;
+  if(m<30)return `Es ist ${mins(30-m)} vor halb ${nxt}`;
+  if(m<40)return `Es ist ${mins(m-30)} nach halb ${nxt}`;
+  return `Es ist ${mins(60-m)} vor ${nxt}`;
+}
+const ones=["null","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn","elf","zwölf","dreizehn","vierzehn","fünfzehn","sechzehn","siebzehn","achtzehn","neunzehn"];
+const tens={2:"zwanzig",3:"dreißig",4:"vierzig",5:"fünfzig"};
+function num(n,hour){
+  if(n===1)return hour?"ein":"eins";
+  if(n<20)return ones[n];
+  const u=n%10,t=tens[Math.floor(n/10)];
+  return u===0?t:(u===1?"ein":ones[u])+"und"+t;
+}
+// In Offiziell mode, read the analog dial as a 24-hour afternoon/evening time:
+// 1 -> 13, 2 -> 14, ... 11 -> 23. The 12 position remains 12 (never 24:xx).
+function officialHour(h){
+  const faceHour=((h%12)+12)%12;
+  return faceHour===0?12:faceHour+12;
+}
+function randomTargetHour(){
+  // Official practice focuses on 13:00–23:59; informal practice keeps its
+  // existing full-day range and spoken 12-hour expressions.
+  return style==="off"?13+Math.floor(Math.random()*11):Math.floor(Math.random()*24);
+}
+function officialWordsTime(h,m){
+  const h24=officialHour(h);
+  return `Es ist ${num(h24,true)} Uhr`+(m?` ${num(m)}`:"");
+}
+// Offiziell answers are spelled out in German; the separate 🕒 line provides
+// the numeric 24-hour reference for the same clock position.
+function officialTime(h,m){return officialWordsTime(h,m);}
+function fmt(h,m){return style==="off"?officialWordsTime(h,m):germanTime(h,m);}
+function tick(){
+  raf=null;
+  if(!live||document.hidden)return;
+  const d=new Date();
+  setHands(d.getHours(),d.getMinutes(),d.getSeconds()+d.getMilliseconds()/1000);
+  raf=requestAnimationFrame(tick);
+}
+function reduceMotion(){return !!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);}
+function stopAt(h,m,keep){
+  live=false;cancelAnimationFrame(raf);raf=null;cancelAnimationFrame(animRaf);animRaf=null;
+  curH=h;curM=m;de.textContent=fmt(h,m);
+  if(!keep){answer.classList.remove("open");clearTry();graded=false;syncExtras();}
+  const from={h:parseFloat((H.getAttribute("transform")||"rotate(0)").match(/-?[\d.]+/)[0]),
+              m:parseFloat((M.getAttribute("transform")||"rotate(0)").match(/-?[\d.]+/)[0]),
+              s:parseFloat((S.getAttribute("transform")||"rotate(0)").match(/-?[\d.]+/)[0])};
+  const to={h:(h%12)*30+m*0.5,m:m*6,s:0};
+  const near=(a,b)=>{const d=((b-a+540)%360)-180;return a+d;};
+  const tgt={h:near(from.h,to.h),m:near(from.m,to.m),s:near(from.s,to.s)};
+  if(reduceMotion()){rot(H,to.h);rot(M,to.m);rot(S,to.s);return;}
+  const t0=performance.now(),dur=900;
+  const animate=t=>{
+    if(live){animRaf=null;return;}
+    const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+    rot(H,from.h+(tgt.h-from.h)*e);rot(M,from.m+(tgt.m-from.m)*e);rot(S,from.s+(tgt.s-from.s)*e);
+    if(k<1)animRaf=requestAnimationFrame(animate);else animRaf=null;
+  };
+  animRaf=requestAnimationFrame(animate);
+}
+// ============================================================
+// 5. PRACTICE CONTROLS & ANSWER CHECKING
+// ============================================================
+document.getElementById("clock").addEventListener("click",()=>{
+  if(mode==="rev"){newRev();return;}
+  stopAt(randomTargetHour(),Math.floor(Math.random()*(60/step))*step);
+});
+const activateKey=(fn)=>e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fn();}};
+const pauseAnimations=()=>{
+  cancelAnimationFrame(raf);raf=null;
+  cancelAnimationFrame(animRaf);animRaf=null;
+};
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){pauseAnimations();return;}
+  if(live&&raf===null)tick();
+  else if(!live&&curH!==null&&animRaf===null)setHands(curH,curM,0);
+});
+document.getElementById("clock").addEventListener("keydown",activateKey(()=>document.getElementById("clock").click()));
+answer.addEventListener("click",()=>{if(mode!=="read")return;if(!live){answer.classList.toggle("open");syncExtras();}});
+answer.addEventListener("keydown",activateKey(()=>answer.click()));
+document.getElementById("live").addEventListener("click",()=>{
+  if(mode==="rev"){newRev();return;}
+  if(live)return;live=true;cancelAnimationFrame(animRaf);animRaf=null;answer.classList.remove("open");de.textContent="–";curH=null;clearTry();graded=false;syncExtras();tick();
+});
+document.getElementById("seg").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  step=+b.dataset.step;
+  storageSet("gc_step",String(step));
+  document.querySelectorAll("#seg button").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+});
+document.getElementById("seg2").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  style=b.dataset.style;
+  storageSet("gc_style",style);
+  document.querySelectorAll("#seg2 button").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+  if(curH!==null&&(!live||mode==="rev")){de.textContent=fmt(curH,curM);syncExtras();}
+});
+// Accept standard German spelling, ASCII digraphs (ae/oe/ue), and plain vowels.
+// Cap combinations so an unusually long input cannot create exponential work.
+function normVariants(t){
+  const source=String(t).toLowerCase().replace(/ß/g,"ss");
+  let variants=[""];
+  for(const ch of source){
+    const choices=ch==="ä"?["ae","a"]:ch==="ö"?["oe","o"]:ch==="ü"?["ue","u"]:[ch];
+    const next=[];
+    for(const prefix of variants){
+      for(const choice of choices){
+        next.push(prefix+choice);
+        if(next.length>=256)break;
+      }
+      if(next.length>=256)break;
+    }
+    variants=next;
+  }
+  return [...new Set(variants.map(v=>v.replace(/[^a-z\s]/g," ").replace(/\s+/g," ").trim().replace(/^es ist /,"")))].filter(Boolean);
+}
+const dig=(h,m)=>String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+const bare=t=>t.replace(/^Es ist /,"");
+function alts(h,m){
+  const c=hn[h%12],n=hn[(h+1)%12];
+  return ({15:[`viertel ${n}`],20:[`zehn vor halb ${n}`],25:[`fünfundzwanzig nach ${c}`],35:[`fünfundzwanzig vor ${n}`],40:[`zehn nach halb ${n}`],45:[`dreiviertel ${n}`]})[m]||[];
+}
+function accepted(h,m){
+  // Numeric formal answers are validated by digitalMatch(). Do not normalize
+  // the numeric display as words: removing its digits would reduce it to “Uhr”
+  // and accidentally allow that incomplete answer to pass.
+  const l=style==="off"?[officialWordsTime(h,m)]:[fmt(h,m),...alts(h,m)];
+  if(m===0){
+    if(style==="inf"){l.push(hn[h%12]);if(h%12===1)l.push("ein");}
+    else {const h24=officialHour(h);l.push(num(h24,true),num(h24));}
+  }
+  return [...new Set(l.flatMap(normVariants))];
+}
+function normT(t){
+  t=t.replace(/(\d)\.(?!\d)/g,"$1")
+     .replace(/(\d{1,2})\s*:\s*30(?:\s*uhr)?/gi,(a,x)=>" halb "+hn[(+x+1)%12]+" ")
+     .replace(/(halb \S+)\s+uhr\b/gi,"$1")
+     .replace(/\bMinuten?\b/gi," ")
+     .replace(/(\d{1,2})\s*[:.]\s*(\d{2})/g,(a,x,y)=>" "+num(+x,true)+" uhr "+(+y?num(+y):"")+" ")
+     .replace(/(\d{1,2})\s*uhr/gi,(a,x)=>" "+num(+x,true)+" uhr ")
+     .replace(/\d{1,2}/g,x=>" "+num(+x)+" ");
+  return normVariants(t);
+}
+function fillExtras(){
+  if(curH===null)return;
+  // The selected style is shown in the main answer box; show only its alternative and the digital time.
+  const alternative=style==="off"
+    ? `${t("infLabel")}: <b dir="ltr">${germanTime(curH,curM)}</b>`
+    : `${t("offLabel")}: <b dir="ltr">${officialTime(curH,curM)}</b>`;
+  ex.innerHTML=`${alternative}<br>🕒 ${dig(officialHour(curH),curM)}`;
+}
+function syncAnswerVisibility(){
+  // In Type mode, keep the target answer hidden until the learner submits an attempt.
+  // Reverse mode uses the clock choices and must not expose the text answer card.
+  answer.hidden=mode!=="read"&&!(mode==="type"&&graded&&curH!==null);
+}
+function syncExtras(){
+  syncAnswerVisibility();
+  const opened=curH!==null&&answer.classList.contains("open");
+  const show=opened&&(
+    (mode==="read"&&!live)||
+    (mode==="type"&&graded&&!live)||
+    (mode==="rev"&&graded)
+  );
+  extras.hidden=!show;if(show)fillExtras();
+}
+function grade(ok){
+  recordPracticeProgress(ok);
+  if(roundDone){score={n:0,ok:0,wrong:[]};roundDone=false;}
+  score.n++;if(ok)score.ok++;else score.wrong.push(bare(fmt(curH,curM))+" ("+dig(officialHour(curH),curM)+")");
+  let tx=t("score",{ok:score.ok,n:score.n});
+  if(roundEl.checked&&score.n>=10){
+    roundDone=true;
+    completedRounds++;
+    storageSet("gc_completed_rounds",String(completedRounds));
+    tx=t("roundDone",{ok:score.ok})+(score.wrong.length?t("mistakes")+score.wrong.join(", "):" 🎉");
+  }
+  scoreEl.textContent=tx;bump(ok);
+}
+function digitalMatch(x){
+  const b=x.match(/^\s*(\d{1,2})\s*\.?\s*$/);
+  if(b){
+    const hh=+b[1];
+    if(hh<0||hh>23||curM!==0)return false;
+    return style==="off"?hh===officialHour(curH):hh%12===curH%12;
+  }
+  const m=x.match(/^\s*(?:es ist\s+)?(\d{1,2})\s*(?:[:.]\s*(\d{2})\s*(?:uhr)?|uhr(?:\s*(\d{1,2}))?)\s*\.?\s*$/i);
+  if(!m)return false;
+  const hh=+m[1],mm=+(m[2]||m[3]||0);
+  if(hh<0||hh>23||mm<0||mm>59)return false;
+  return mm===curM&&(style==="off"?hh===officialHour(curH):hh%12===curH%12);
+}
+function check(texts){
+  if(live||curH===null){res.style.color="var(--muted)";res.textContent=t("clickFirst");return;}
+  texts=texts||[inp.value];
+  if(!texts.join("").trim())return;
+  const nt=texts.map(normT),acc=accepted(curH,curM),dm=texts.some(digitalMatch);
+  const canonical=style==="off"?officialWordsTime(curH,curM):fmt(curH,curM);
+  const canonicalForms=normVariants(canonical);
+  const ok=dm||nt.some(forms=>forms.some(form=>acc.includes(form)));
+  const main=dm||nt.some(forms=>forms.some(form=>canonicalForms.includes(form)));
+  answer.classList.add("open");
+  if(!graded){graded=true;grade(ok);}
+  res.style.color=ok?"#2e9e5b":"#e5484d";
+  res.textContent=ok?t(main?"ok":"okAlt"):t("bad");
+  syncExtras();
+}
+// ============================================================
+// 6. REVERSE MODE
+// Clock choices are intentionally close in time so the learner
+// must read both the hour and minute hands.
+// ============================================================
+function mini(h,m,revStyle="numbered-step"){
+  const showNumbers=revStyle==="numbered-step";
+  const showMinuteTicks=revStyle!=="blank-impossible";
+  let ticks="";
+  if(showMinuteTicks){
+    const count=revStyle==="blank-free"?12:60;
+    for(let j=0;j<count;j++){
+      const i=revStyle==="blank-free"?j*5:j;
+      const a=i*6*Math.PI/180;
+      const big=i%5===0;
+      const r1=big?40:43,r2=46;
+      const w=big?1.8:1;
+      ticks+=`<line x1="${50+r1*Math.sin(a)}" y1="${50-r1*Math.cos(a)}" x2="${50+r2*Math.sin(a)}" y2="${50-r2*Math.cos(a)}" stroke="var(--fg)" stroke-width="${w}" stroke-linecap="round"/>`;
+    }
+  }
+  let n="";
+  if(showNumbers){
+    for(let i=1;i<=12;i++){
+      const a=i*Math.PI/6;
+      n+=`<text x="${50+34*Math.sin(a)}" y="${53-34*Math.cos(a)}" fill="var(--fg)" font-size="9" font-weight="700" text-anchor="middle">${i}</text>`;
+    }
+  }
+  const L=(a,r,w)=>`<line x1="50" y1="50" x2="${50+r*Math.sin(a)}" y2="${50-r*Math.cos(a)}" stroke="var(--fg)" stroke-width="${w}" stroke-linecap="round"/>`;
+  const hourAngle=((h%12)*30+m*.5)*Math.PI/180;
+  const minuteAngle=m*6*Math.PI/180;
+  const face=`<circle cx="50" cy="50" r="47" fill="var(--card)" stroke="var(--fg)" stroke-width="3"/>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">${face}${ticks}${n}${L(hourAngle,25,5)}${L(minuteAngle,37,3)}<circle cx="50" cy="50" r="3.5" fill="var(--accent)"/></svg>`;
+}
+function updateReverseChoiceLabels(){
+  const label=t({
+    "numbered-step":"revNormal",
+    "blank-step":"revMedium",
+    "blank-free":"revHard",
+    "blank-impossible":"revImpossible"
+  }[revStyle]);
+  document.querySelectorAll("#opts .opt-label").forEach(e=>{e.textContent=label;});
+}
+function newRev(){
+  live=true;cancelAnimationFrame(raf);tick();
+  // Time Difficulty controls the target minute grid in every practice mode.
+  // Clock Difficulty changes only the visual aids, never the generated time.
+  const minuteStep=step;
+  curH=randomTargetHour();
+  curM=Math.floor(Math.random()*(60/minuteStep))*minuteStep;
+  graded=false;clearTry();revres.textContent="";
+  const key=o=>o.h*60+o.m;
+  const list=[{h:curH,m:curM}],seen=new Set([key(list[0])]);
+  const add=o=>{if(list.length<3&&!seen.has(key(o))){seen.add(key(o));list.push(o);}};
+
+  // Keep all three choices adjacent on the selected time-difficulty grid.
+  // Whole hours use neighboring hours; quarter/half and five-minute modes use
+  // the neighboring interval; every-minute mode uses +/- five minutes.
+  const offset=minuteStep===60?60:minuteStep===15?15:5;
+  if(style==="off"){
+    // Do not wrap official choices from 23:xx back to 13:xx: those times are
+    // far apart in the 24-hour system even though the analog dial is circular.
+    const target=curH*60+curM,minTime=13*60,maxTime=24*60-1;
+    for(let distance=offset;list.length<3;distance+=offset){
+      for(const total of [target-distance,target+distance]){
+        if(total>=minTime&&total<=maxTime){add({h:Math.floor(total/60),m:total%60});}
+        if(list.length===3)break;
+      }
+    }
+  }else{
+    for(const off of [-offset,offset]){
+      const total=(curH*60+curM+off+1440)%1440;
+      add({h:Math.floor(total/60),m:total%60});
+    }
+  }
+
+  // For the supported settings, the two adjacent distractors always make
+  // three unique choices, including across midnight.
+  correctKey=key(list[0]);
+  for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}
+  const labels={
+    "numbered-step":t("revNormal"),
+    "blank-step":t("revMedium"),
+    "blank-free":t("revHard"),
+    "blank-impossible":t("revImpossible")
+  };
+  opts.innerHTML=list.map((o,i)=>`<div class="opt" data-k="${key(o)}" role="button" tabindex="0" aria-label="${t("clockOption",{n:i+1})}">${mini(o.h,o.m,revStyle)}<div class="opt-label">${labels[revStyle]}</div></div>`).join("");
+  updateReverseChoiceLabels();
+  answer.classList.add("open");de.textContent=fmt(curH,curM);syncExtras();
+}
+opts.addEventListener("click",e=>{
+  const d=e.target.closest(".opt");if(!d||graded)return;
+  graded=true;const ok=+d.dataset.k===correctKey;
+  [...opts.children].forEach(x=>{if(+x.dataset.k===correctKey)x.classList.add("good");});
+  if(!ok)d.classList.add("bad");
+  grade(ok);revres.style.color=ok?"#2e9e5b":"#e5484d";
+  revres.textContent=ok?t("ok"):t("revBad");
+  stopAt(curH,curM,true);syncExtras();
+});
+opts.addEventListener("keydown",e=>{const d=e.target.closest(".opt");if(!d||graded)return;if(e.key==="Enter"||e.key===" "){e.preventDefault();d.click();}});
+$("nextq").addEventListener("click",newRev);
+// ============================================================
+// 7. SETTINGS PANEL & ACCESSIBILITY
+// ============================================================
+const sheet=$("sheet"),panel=sheet.querySelector(".panel"),gear=$("gear"),closeBtn=$("close"),liveBtn=$("live");
+const progressBtn=$("progressBtn"),progressPopup=$("progressPopup"),progressClose=$("progressClose");
+let modalReturnFocus=null;
+const focusables=()=>[...panel.querySelectorAll('button:not([disabled]),input:not([disabled]),[href],[tabindex]:not([tabindex="-1"])')].filter(x=>!x.hidden&&x.offsetParent!==null);
+function setProgressPopup(open){
+  progressPopup.hidden=!open;
+  progressBtn.setAttribute("aria-expanded",String(open));
+  if(open)renderProgress();
+}
+function openSettings(){modalReturnFocus=document.activeElement;sheet.hidden=false;document.body.classList.add("modal-open");setTimeout(()=>closeBtn.focus(),0);}
+function closeSettings(){setProgressPopup(false);sheet.hidden=true;document.body.classList.remove("modal-open");if(modalReturnFocus&&(modalReturnFocus.isConnected||document.documentElement.contains(modalReturnFocus)))modalReturnFocus.focus();modalReturnFocus=null;}
+gear.addEventListener("click",openSettings);
+closeBtn.addEventListener("click",closeSettings);
+progressBtn.addEventListener("click",()=>setProgressPopup(progressPopup.hidden));
+progressClose.addEventListener("click",()=>{setProgressPopup(false);progressBtn.focus();});
+sheet.addEventListener("click",e=>{if(e.target===sheet)closeSettings();});
+document.addEventListener("keydown",e=>{
+  if(sheet.hidden)return;
+  if(e.key==="Escape"){
+    e.preventDefault();
+    if(!progressPopup.hidden){setProgressPopup(false);progressBtn.focus();return;}
+    closeSettings();return;
+  }
+  if(e.key!=="Tab")return;
+  const fs=focusables();if(!fs.length)return;
+  const first=fs[0],last=fs[fs.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+});
+// ============================================================
+// 8. SETTINGS SUMMARY & MODE SWITCHING
+// ============================================================
+function updateSummary(){
+  const m={read:t("modeRead"),type:t("modeType"),rev:t("modeRev")}[mode],st={60:t("stepHour"),5:t("step5"),1:t("step1"),15:t("stepShort15")}[step];
+  const rs={
+    "numbered-step":t("revNormal"),
+    "blank-step":t("revMedium"),
+    "blank-free":t("revHard"),
+    "blank-impossible":t("revImpossible")
+  }[revStyle];
+  $("sum").textContent=[style==="inf"?t("infLabel"):t("offLabel"),m,st,rs].concat(roundEl.checked?[t("roundShort")]:[]).join(" • ");
+}
+sheet.addEventListener("click",updateSummary);sheet.addEventListener("change",updateSummary);updateSummary();
+document.getElementById("chk").addEventListener("click",()=>check());
+inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+document.getElementById("revSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  revStyle=b.dataset.revstyle;storageSet("gc_revstyle",revStyle);
+  applyClockLevel();
+  document.querySelectorAll("#revSeg button").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+  updateSummary();
+  if(mode==="rev")newRev();
+});
+document.getElementById("seg3").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const clickedMode=b.dataset.mode;
+  if(clickedMode===mode)return;
+  mode=clickedMode;
+  storageSet("gc_mode",mode);
+  document.querySelectorAll("#seg3 button").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+  typebox.hidden=mode!=="type";rev.hidden=mode!=="rev";liveBtn.hidden=mode==="rev";
+  answer.hidden=mode!=="read";
+  const rp2=$("revPrefs");
+  rp2.hidden=false;
+  clearTry();
+  // Changing practice mode invalidates the current question so a revealed
+  // answer from Read & Reveal cannot be carried into Type and scored.
+  live=true;
+  cancelAnimationFrame(raf);raf=null;
+  cancelAnimationFrame(animRaf);animRaf=null;
+  answer.classList.remove("open");
+  de.textContent="–";
+  curH=null;curM=null;graded=false;
+  res.textContent="";
+  syncExtras();
+  if(mode==="rev")newRev();
+  else tick();
+});
+roundEl.addEventListener("change",()=>{score={n:0,ok:0,wrong:[]};roundDone=false;scoreEl.textContent="";storageSet("gc_round",roundEl.checked?"1":"0");renderStreak();updateSummary();});
+// ============================================================
+// 9. LANGUAGE APPLICATION & STARTUP
+// ============================================================
+function applyLang(){
+  const d=document.documentElement;d.lang=lang;d.dir=lang==="ar"?"rtl":"ltr";document.title=t("title");
+  document.querySelectorAll("[data-i18n]").forEach(e=>{
+    // The Reverse-difficulty buttons use separate emoji/text spans so the
+    // emoji cannot wrap onto a line above the label.
+    if(e.closest("#revSeg"))return;
+    e.textContent=t(e.dataset.i18n);
+  });
+  document.querySelectorAll("#revSeg button[data-i18n]").forEach(button=>{
+    const raw=t(button.dataset.i18n);
+    const match=raw.match(/^(🟢|🟡|🔴|💀)\s*(.*)$/);
+    button.replaceChildren();
+    if(match){
+      const emoji=document.createElement("span");
+      emoji.className="rev-emoji";emoji.setAttribute("aria-hidden","true");emoji.textContent=match[1];
+      button.appendChild(emoji);
+      const label=document.createElement("span");
+      label.className="rev-label";label.textContent=match[2];
+      button.appendChild(label);
+    }else button.textContent=raw;
+    button.style.direction=lang==="ar"?"rtl":"ltr";
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach(e=>{e.title=t(e.dataset.i18nTitle);});
+  document.querySelectorAll("[data-i18n-aria]").forEach(e=>{e.setAttribute("aria-label",t(e.dataset.i18nAria));});
+  document.querySelectorAll(".opt").forEach((e,i)=>e.setAttribute("aria-label",t("clockOption",{n:i+1})));
+  updateReverseChoiceLabels();
+  document.querySelectorAll("#segL button").forEach(x=>{const on=x.dataset.lang===lang;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+  document.querySelectorAll("#revSeg button").forEach(x=>{const on=x.dataset.revstyle===revStyle;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+  $("revPrefs").hidden=false;
+  applyClockLevel();
+  if(rstT){clearTimeout(rstT);rstT=null;}
+  renderStreak();renderProgress();updateSummary();res.textContent="";revres.textContent="";syncExtras();
+}
+$("segL").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  lang=b.dataset.lang;storageSet("gc_lang",lang);
+  applyLang();
+});
+applyLang();
+document.querySelectorAll("#seg2 button").forEach(x=>{const on=x.dataset.style===style;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+document.querySelectorAll("#seg button").forEach(x=>{const on=+x.dataset.step===step;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+document.querySelectorAll("#seg3 button").forEach(x=>{const on=x.dataset.mode===mode;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+document.querySelectorAll("#revSeg button").forEach(x=>{const on=x.dataset.revstyle===revStyle;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
+typebox.hidden=mode!=="type";rev.hidden=mode!=="rev";liveBtn.hidden=mode==="rev";answer.hidden=mode!=="read";$("revPrefs").hidden=false;applyClockLevel();updateSummary();
+if(mode==="rev")newRev();
+else tick();
+window.addEventListener("pagehide",pauseAnimations);
+window.addEventListener("pageshow",()=>{
+  if(document.hidden)return;
+  if(live&&raf===null)tick();
+  else if(!live&&curH!==null&&animRaf===null)setHands(curH,curM,0);
+});
+</script>
+
+<!-- Portable single-file build: CSS and JavaScript are embedded; no network or service worker required. -->
+</body>
+</html>

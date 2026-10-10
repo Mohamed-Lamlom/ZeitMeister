@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+<title id="title">ZeitMeister logo</title><desc id="desc">A minimalist clock mark with German-inspired accent stripes</desc>
+<path d="M9 20h8" stroke="#1d2433" stroke-width="4" stroke-linecap="round"/>
+<path d="M6 28h11" stroke="#d5ad3f" stroke-width="4" stroke-linecap="round"/>
+<path d="M9 36h9" stroke="#d9482b" stroke-width="4" stroke-linecap="round"/>
+<circle cx="33" cy="32" r="23" fill="#f6f3ec" stroke="#1d2433" stroke-width="4"/>
+<circle cx="33" cy="32" r="18" fill="none" stroke="#6b7280" stroke-width="1.4" opacity=".55"/>
+<line x1="33" y1="32" x2="33" y2="19" stroke="#1d2433" stroke-width="4" stroke-linecap="round"/>
+<line x1="33" y1="32" x2="45" y2="36" stroke="#1d2433" stroke-width="3.5" stroke-linecap="round"/>
+<line x1="33" y1="32" x2="33" y2="13" stroke="#d9482b" stroke-width="2" stroke-linecap="round"/>
+<circle cx="33" cy="32" r="3.2" fill="#d9482b"/>
+</svg>
