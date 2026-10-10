@@ -1,6 +1,6 @@
 /* ZeitMeister offline app shell. Works on HTTPS or localhost only. */
 // Increment this shell key whenever the HTML, CSS, JS, manifest, or icons change.
-const CACHE_NAME = "zeitmeister-shell-audit-2026-10-10";
+const CACHE_NAME = "zeitmeister-shell-theme-toggle-2026-10-10";
 const APP_SHELL = [
   "index.html",
   "css/style.css",

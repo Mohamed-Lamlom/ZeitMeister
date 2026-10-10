@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="description" content="Practice reading analog clocks and telling the time in German, with informal and official forms.">
-<meta name="theme-color" content="#f6f3ec">
-<meta name="theme-color" content="#14171f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themeColor" content="#f6f3ec">
+<script>
+// Keep ZeitMeister theme independent from the browser/OS appearance setting.
+try {
+  const savedTheme = localStorage.getItem("gc_theme");
+  document.documentElement.dataset.theme = savedTheme === "dark" ? "dark" : "light";
+} catch (_) {
+  document.documentElement.dataset.theme = "light";
+}
+</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="mobile-web-app-capable" content="yes">
@@ -72,6 +80,15 @@
     </div>
   </div>
 </div>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">
+  <svg class="theme-icon" id="themeIconMoon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20.7 13A8.5 8.5 0 0 1 11 3.3 8.5 8.5 0 1 0 20.7 13Z"/>
+  </svg>
+  <svg class="theme-icon" id="themeIconSun" viewBox="0 0 24 24" aria-hidden="true" hidden>
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+  </svg>
+</button>
 <button class="gear" id="gear" data-i18n-aria="settings" data-i18n-title="settings">⚙️</button>
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
   <div class="panel">

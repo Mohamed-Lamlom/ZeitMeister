@@ -4,18 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="description" content="Practice reading analog clocks and telling the time in German, with informal and official forms.">
-<meta name="theme-color" content="#f6f3ec">
-<meta name="theme-color" content="#14171f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themeColor" content="#f6f3ec">
+<script>
+// Keep ZeitMeister theme independent from the browser/OS appearance setting.
+try {
+  const savedTheme = localStorage.getItem("gc_theme");
+  document.documentElement.dataset.theme = savedTheme === "dark" ? "dark" : "light";
+} catch (_) {
+  document.documentElement.dataset.theme = "light";
+}
+</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="mobile-web-app-capable" content="yes">
-
-
-
-
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="ZeitMeister">
 <title>ZeitMeister — German Time Trainer</title>
-<style>
+  <style>
 /*
  * ZeitMeister — German Time Trainer
  * Main stylesheet
@@ -26,10 +34,10 @@
 /* ============================================================
    1. THEME & GLOBAL RESET
    ============================================================ */
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f6f3ec;--fg:#1d2433;--card:#fff;--accent:#d9482b;--muted:#6b7280;--cover:#1d2433;--coverfg:#f6f3ec}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#eceae4;--coverfg:#14171f}}
-:root[data-theme="dark"]{--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#e8e5df;--coverfg:#14171f}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14171f;--fg:#eceae4;--card:#1d222d;--accent:#ff7a5c;--muted:#9aa3b2;--cover:#e8e5df;--coverfg:#14171f}
 html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{overflow-x:hidden}
 button,input{-webkit-appearance:none;appearance:none}
@@ -154,13 +162,17 @@ html[lang="en"] .rl,html[lang="de"] .rl{flex-direction:row-reverse}
 #res{margin-top:10px;font-weight:700;min-height:1.4em}
 .btn{margin-top:16px;touch-action:manipulation;background:none;border:1px solid var(--muted);color:var(--fg);padding:8px 16px;border-radius:999px;font:inherit;cursor:pointer}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn:focus-visible,.seg button:focus-visible,.gear:focus-visible,.x:focus-visible,.typebox input:focus-visible,.toggles input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn:focus-visible,.seg button:focus-visible,.gear:focus-visible,.theme-toggle:focus-visible,.x:focus-visible,.typebox input:focus-visible,.toggles input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .sum{font-size:.82rem;color:var(--muted);margin:0 0 14px;direction:ltr;unicode-bidi:plaintext}
 /* ============================================================
    4. SETTINGS PANEL
    ============================================================ */
 .gear{position:fixed;touch-action:manipulation;top:calc(env(safe-area-inset-top,0px) + 10px);left:calc(12px + env(safe-area-inset-left,0px));z-index:40;width:44px;height:44px;border-radius:50%;border:1px solid var(--muted);background:var(--card);font-size:1.3rem;cursor:pointer;line-height:1}
 .gear:hover{border-color:var(--accent)}
+.theme-toggle{position:fixed;touch-action:manipulation;top:calc(env(safe-area-inset-top,0px) + 10px);right:calc(12px + env(safe-area-inset-right,0px));z-index:40;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:50%;border:1px solid var(--muted);background:var(--card);color:var(--fg);cursor:pointer;line-height:1}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.theme-icon{display:block;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.theme-icon[hidden]{display:none}
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .sheet[hidden]{display:none}
 .sheet{overscroll-behavior:contain}
@@ -758,6 +770,12 @@ body {
     width: 40px;
     height: 40px;
     left: calc(8px + env(safe-area-inset-left, 0px));
+  }
+
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    right: calc(8px + env(safe-area-inset-right, 0px));
   }
 
   .clock {
@@ -1651,6 +1669,15 @@ html[lang="de"] #revSeg {
     </div>
   </div>
 </div>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">
+  <svg class="theme-icon" id="themeIconMoon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20.7 13A8.5 8.5 0 0 1 11 3.3 8.5 8.5 0 1 0 20.7 13Z"/>
+  </svg>
+  <svg class="theme-icon" id="themeIconSun" viewBox="0 0 24 24" aria-hidden="true" hidden>
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+  </svg>
+</button>
 <button class="gear" id="gear" data-i18n-aria="settings" data-i18n-title="settings">⚙️</button>
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
   <div class="panel">
@@ -1736,9 +1763,9 @@ html[lang="de"] #revSeg {
 // 1. UI TRANSLATIONS
 // ============================================================
 const I18N={
-ar:{title:"ZeitMeister — الساعة بالألماني",h1:"كام الساعة بالألماني؟",tip:"اضغط على الساعة عشان توقفها على وقت، وبعدها اضغط على المربع عشان تشوف الإجابة",tipMobileStart:"اضغط على الساعة",tipMobileThen:"ثم",tipMobileA11y:"اضغط على الساعة، ثم اضغط على مربع الإجابة",cover:"اضغط هنا لإظهار الإجابة",chipStreak:"🔥 السلسلة",chipTen:"🔟 جولات",chipBest:"🏆 أفضل سلسلة",inRow:"ورا بعض",newq:"سؤال جديد",chk:"تحقق من إجابتي",live:"▶ شغّل الساعة تاني",settings:"الإعدادات",close:"إغلاق",clockA11y:"الساعة — اضغط لإيقافها وتوليد سؤال",revealA11y:"إظهار أو إخفاء الإجابة",clockOption:"اختيار الساعة {n}",inputA11y:"اكتب إجابتك بالألماني",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"اللغة",lblStyle:"الصيغة",lblMode:"طريقة التدريب",lblClockLevel:"مستوى الساعة",revNormal:"🟢 عادي",revMedium:"🟡 متوسط",revHard:"🔴 صعب",revImpossible:"💀 المستحيل",lblTimes:"الأوقات",modeRead:"شوف الإجابة",modeType:"اكتب الإجابة",modeRev:"بالعكس",stepHour:"ساعة عشوائية",step5:"كل 5 دقايق",step1:"كل دقيقة",step15:"ربع / نصف",stepShort15:"ربع / نصف",round:"جولة من 10 أسئلة",roundShort:"جولة 10",rst:"تصفير الإحصائيات",rstConfirm:"اضغط تاني للتأكيد",progress:"التقدّم",progressTitle:"إجمالي التقدّم",progressType:"وضع الكتابة",progressReverse:"وضع بالعكس",progressAttempted:"الأسئلة المجاب عنها",progressCorrect:"الإجابات الصحيحة",progressAccuracy:"نسبة الإجابات الصحيحة",score:"النتيجة: {ok}/{n}",roundDone:"خلصت الجولة: {ok}/10",mistakes:" — الأخطاء: ",clickFirst:"اضغط على الساعة الأول عشان تقف على وقت",ok:"✔ صح!",okAlt:"✔ صح! (صيغة تانية مقبولة)",bad:"✘ مش مظبوط — الإجابة الصح ظاهرة فوق",revBad:"✘ غلط — الساعة الصح معلّمة بالأخضر"},
-en:{title:"ZeitMeister — German Time Trainer",h1:"What time is it?",tip:"Click the clock to stop it, then reveal the answer",tipMobileStart:"Tap the clock",tipMobileThen:"then",tipMobileA11y:"Tap the clock, then tap the answer box",cover:"Tap to reveal the answer",chipStreak:"🔥 Streak",chipTen:"🔟 Rounds",chipBest:"🏆 Best streak",inRow:"in a row",newq:"New question",chk:"Check answer",live:"▶ Resume the clock",settings:"Settings",close:"Close",clockA11y:"Clock — press to stop it and generate a question",revealA11y:"Show or hide the answer",clockOption:"Clock {n}",inputA11y:"Type your answer in German",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"Language",lblStyle:"Style",lblMode:"Practice mode",lblClockLevel:"Clock difficulty",revNormal:"🟢 Normal",revMedium:"🟡 Medium",revHard:"🔴 Hard",revImpossible:"💀 Impossible",lblTimes:"Time difficulty",modeRead:"Read",modeType:"Type",modeRev:"Reverse",stepHour:"Random hour",step5:"Every 5 min",step1:"Every minute",step15:"Quarter / half",stepShort15:"Quarter / half",round:"10-question round",roundShort:"10-question round",rst:"Reset stats",rstConfirm:"Tap again to confirm",progress:"Progress",progressTitle:"Practice progress",progressType:"Type mode",progressReverse:"Reverse mode",progressAttempted:"Questions answered",progressCorrect:"Correct answers",progressAccuracy:"Accuracy",score:"Score: {ok}/{n}",roundDone:"Round complete: {ok}/10",mistakes:" — Mistakes: ",clickFirst:"Click the clock first to stop it at a time",ok:"✔ Correct!",okAlt:"✔ Correct! (another accepted form)",bad:"✘ Not quite — the correct answer is shown above",revBad:"✘ Incorrect — the correct clock is highlighted in green"},
-de:{title:"ZeitMeister — Uhrzeit-Trainer",h1:"Wie spät ist es?",tip:"Klicke auf die Uhr, um sie anzuhalten, und decke dann die Antwort auf",tipMobileStart:"Tippe auf die Uhr",tipMobileThen:"dann",tipMobileA11y:"Tippe auf die Uhr und dann auf das Antwortfeld",cover:"Klicken, um die Antwort aufzudecken",chipStreak:"🔥 Serie",chipTen:"🔟 Runden",chipBest:"🏆 Beste Serie",inRow:"in Folge",newq:"Neue Frage",chk:"Antwort prüfen",live:"▶ Uhr weiterlaufen lassen",settings:"Einstellungen",close:"Schließen",clockA11y:"Uhr — anklicken, um sie anzuhalten und eine Frage zu erzeugen",revealA11y:"Antwort ein- oder ausblenden",clockOption:"Uhr {n}",inputA11y:"Uhrzeit auf Deutsch eingeben",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"Sprache",lblStyle:"Sprachform",lblMode:"Übungsmodus",lblClockLevel:"Schwierigkeitsgrad der Uhr",revNormal:"🟢 Normal",revMedium:"🟡 Mittel",revHard:"🔴 Schwer",revImpossible:"💀 Unmöglich",lblTimes:"Schwierigkeitsgrad",modeRead:"Ansehen",modeType:"Eingeben",modeRev:"Umgekehrt",stepHour:"Zufällige Stunde",step5:"Alle 5 Min.",step1:"Jede Min.",step15:"Viertel / halb",stepShort15:"Viertel / halb",round:"10er-Runde",roundShort:"10er-Runde",rst:"Statistik zurücksetzen",rstConfirm:"Zum Bestätigen erneut klicken",progress:"Fortschritt",progressTitle:"Übungsfortschritt",progressType:"Eingabemodus",progressReverse:"Umgekehrter Modus",progressAttempted:"Beantwortete Fragen",progressCorrect:"Richtige Antworten",progressAccuracy:"Trefferquote",score:"Ergebnis: {ok}/{n}",roundDone:"Runde abgeschlossen: {ok}/10",mistakes:" — Fehler: ",clickFirst:"Klicke zuerst auf die Uhr, um sie anzuhalten",ok:"✔ Richtig!",okAlt:"✔ Richtig! (andere gültige Form)",bad:"✘ Noch nicht — die richtige Antwort steht oben",revBad:"✘ Falsch — die richtige Uhr ist grün markiert"}
+ar:{title:"ZeitMeister — الساعة بالألماني",h1:"كام الساعة بالألماني؟",tip:"اضغط على الساعة عشان توقفها على وقت، وبعدها اضغط على المربع عشان تشوف الإجابة",tipMobileStart:"اضغط على الساعة",tipMobileThen:"ثم",tipMobileA11y:"اضغط على الساعة، ثم اضغط على مربع الإجابة",cover:"اضغط هنا لإظهار الإجابة",chipStreak:"🔥 السلسلة",chipTen:"🔟 جولات",chipBest:"🏆 أفضل سلسلة",inRow:"ورا بعض",newq:"سؤال جديد",chk:"تحقق من إجابتي",live:"▶ شغّل الساعة تاني",settings:"الإعدادات",themeToDark:"التبديل إلى الوضع الداكن",themeToLight:"التبديل إلى الوضع الفاتح",close:"إغلاق",clockA11y:"الساعة — اضغط لإيقافها وتوليد سؤال",revealA11y:"إظهار أو إخفاء الإجابة",clockOption:"اختيار الساعة {n}",inputA11y:"اكتب إجابتك بالألماني",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"اللغة",lblStyle:"الصيغة",lblMode:"طريقة التدريب",lblClockLevel:"مستوى الساعة",revNormal:"🟢 عادي",revMedium:"🟡 متوسط",revHard:"🔴 صعب",revImpossible:"💀 المستحيل",lblTimes:"الأوقات",modeRead:"شوف الإجابة",modeType:"اكتب الإجابة",modeRev:"بالعكس",stepHour:"ساعة عشوائية",step5:"كل 5 دقايق",step1:"كل دقيقة",step15:"ربع / نصف",stepShort15:"ربع / نصف",round:"جولة من 10 أسئلة",roundShort:"جولة 10",rst:"تصفير الإحصائيات",rstConfirm:"اضغط تاني للتأكيد",progress:"التقدّم",progressTitle:"إجمالي التقدّم",progressType:"وضع الكتابة",progressReverse:"وضع بالعكس",progressAttempted:"الأسئلة المجاب عنها",progressCorrect:"الإجابات الصحيحة",progressAccuracy:"نسبة الإجابات الصحيحة",score:"النتيجة: {ok}/{n}",roundDone:"خلصت الجولة: {ok}/10",mistakes:" — الأخطاء: ",clickFirst:"اضغط على الساعة الأول عشان تقف على وقت",ok:"✔ صح!",okAlt:"✔ صح! (صيغة تانية مقبولة)",bad:"✘ مش مظبوط — الإجابة الصح ظاهرة فوق",revBad:"✘ غلط — الساعة الصح معلّمة بالأخضر"},
+en:{title:"ZeitMeister — German Time Trainer",h1:"What time is it?",tip:"Click the clock to stop it, then reveal the answer",tipMobileStart:"Tap the clock",tipMobileThen:"then",tipMobileA11y:"Tap the clock, then tap the answer box",cover:"Tap to reveal the answer",chipStreak:"🔥 Streak",chipTen:"🔟 Rounds",chipBest:"🏆 Best streak",inRow:"in a row",newq:"New question",chk:"Check answer",live:"▶ Resume the clock",settings:"Settings",themeToDark:"Switch to dark theme",themeToLight:"Switch to light theme",close:"Close",clockA11y:"Clock — press to stop it and generate a question",revealA11y:"Show or hide the answer",clockOption:"Clock {n}",inputA11y:"Type your answer in German",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"Language",lblStyle:"Style",lblMode:"Practice mode",lblClockLevel:"Clock difficulty",revNormal:"🟢 Normal",revMedium:"🟡 Medium",revHard:"🔴 Hard",revImpossible:"💀 Impossible",lblTimes:"Time difficulty",modeRead:"Read",modeType:"Type",modeRev:"Reverse",stepHour:"Random hour",step5:"Every 5 min",step1:"Every minute",step15:"Quarter / half",stepShort15:"Quarter / half",round:"10-question round",roundShort:"10-question round",rst:"Reset stats",rstConfirm:"Tap again to confirm",progress:"Progress",progressTitle:"Practice progress",progressType:"Type mode",progressReverse:"Reverse mode",progressAttempted:"Questions answered",progressCorrect:"Correct answers",progressAccuracy:"Accuracy",score:"Score: {ok}/{n}",roundDone:"Round complete: {ok}/10",mistakes:" — Mistakes: ",clickFirst:"Click the clock first to stop it at a time",ok:"✔ Correct!",okAlt:"✔ Correct! (another accepted form)",bad:"✘ Not quite — the correct answer is shown above",revBad:"✘ Incorrect — the correct clock is highlighted in green"},
+de:{title:"ZeitMeister — Uhrzeit-Trainer",h1:"Wie spät ist es?",tip:"Klicke auf die Uhr, um sie anzuhalten, und decke dann die Antwort auf",tipMobileStart:"Tippe auf die Uhr",tipMobileThen:"dann",tipMobileA11y:"Tippe auf die Uhr und dann auf das Antwortfeld",cover:"Klicken, um die Antwort aufzudecken",chipStreak:"🔥 Serie",chipTen:"🔟 Runden",chipBest:"🏆 Beste Serie",inRow:"in Folge",newq:"Neue Frage",chk:"Antwort prüfen",live:"▶ Uhr weiterlaufen lassen",settings:"Einstellungen",themeToDark:"Dunkles Design aktivieren",themeToLight:"Helles Design aktivieren",close:"Schließen",clockA11y:"Uhr — anklicken, um sie anzuhalten und eine Frage zu erzeugen",revealA11y:"Antwort ein- oder ausblenden",clockOption:"Uhr {n}",inputA11y:"Uhrzeit auf Deutsch eingeben",infLabel:"Inoffiziell",offLabel:"Offiziell",lblLang:"Sprache",lblStyle:"Sprachform",lblMode:"Übungsmodus",lblClockLevel:"Schwierigkeitsgrad der Uhr",revNormal:"🟢 Normal",revMedium:"🟡 Mittel",revHard:"🔴 Schwer",revImpossible:"💀 Unmöglich",lblTimes:"Schwierigkeitsgrad",modeRead:"Ansehen",modeType:"Eingeben",modeRev:"Umgekehrt",stepHour:"Zufällige Stunde",step5:"Alle 5 Min.",step1:"Jede Min.",step15:"Viertel / halb",stepShort15:"Viertel / halb",round:"10er-Runde",roundShort:"10er-Runde",rst:"Statistik zurücksetzen",rstConfirm:"Zum Bestätigen erneut klicken",progress:"Fortschritt",progressTitle:"Übungsfortschritt",progressType:"Eingabemodus",progressReverse:"Umgekehrter Modus",progressAttempted:"Beantwortete Fragen",progressCorrect:"Richtige Antworten",progressAccuracy:"Trefferquote",score:"Ergebnis: {ok}/{n}",roundDone:"Runde abgeschlossen: {ok}/10",mistakes:" — Fehler: ",clickFirst:"Klicke zuerst auf die Uhr, um sie anzuhalten",ok:"✔ Richtig!",okAlt:"✔ Richtig! (andere gültige Form)",bad:"✘ Noch nicht — die richtige Antwort steht oben",revBad:"✘ Falsch — die richtige Uhr ist grün markiert"}
 };
 const storageGet=(k,fallback)=>{try{const v=localStorage.getItem(k);return v===null?fallback:v;}catch(_){return fallback;}};
 const storageSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(_) {}};
@@ -1753,6 +1780,32 @@ const t=(k,v)=>{
   if(v)for(const q in v)x=x.split("{"+q+"}").join(v[q]);
   return x;
 };
+
+// ============================================================
+// APP-CONTROLLED THEME (independent of browser/OS appearance)
+// ============================================================
+const themeToggle=document.getElementById("themeToggle");
+const themeIconMoon=document.getElementById("themeIconMoon");
+const themeIconSun=document.getElementById("themeIconSun");
+const themeColorMeta=document.getElementById("themeColor");
+function applyTheme(theme,save=false){
+  const selected=theme==="dark"?"dark":"light";
+  document.documentElement.dataset.theme=selected;
+  if(themeIconMoon)themeIconMoon.hidden=selected!=="light";
+  if(themeIconSun)themeIconSun.hidden=selected!=="dark";
+  const labelKey=selected==="dark"?"themeToLight":"themeToDark";
+  if(themeToggle){
+    themeToggle.setAttribute("aria-label",t(labelKey));
+    themeToggle.title=t(labelKey);
+  }
+  if(themeColorMeta)themeColorMeta.setAttribute("content",selected==="dark"?"#14171f":"#f6f3ec");
+  if(save)storageSet("gc_theme",selected);
+}
+applyTheme(storageGet("gc_theme","light"));
+if(themeToggle)themeToggle.addEventListener("click",()=>{
+  const current=document.documentElement.dataset.theme==="dark"?"dark":"light";
+  applyTheme(current==="dark"?"light":"dark",true);
+});
 // ============================================================
 // 2. DOM REFERENCES & APPLICATION STATE
 // ============================================================
@@ -2328,6 +2381,7 @@ function applyLang(){
   });
   document.querySelectorAll("[data-i18n-title]").forEach(e=>{e.title=t(e.dataset.i18nTitle);});
   document.querySelectorAll("[data-i18n-aria]").forEach(e=>{e.setAttribute("aria-label",t(e.dataset.i18nAria));});
+  applyTheme(document.documentElement.dataset.theme||"light");
   document.querySelectorAll(".opt").forEach((e,i)=>e.setAttribute("aria-label",t("clockOption",{n:i+1})));
   updateReverseChoiceLabels();
   document.querySelectorAll("#segL button").forEach(x=>{const on=x.dataset.lang===lang;x.classList.toggle("on",on);x.setAttribute("aria-pressed",String(on));});
@@ -2357,7 +2411,15 @@ window.addEventListener("pageshow",()=>{
   else if(!live&&curH!==null&&animRaf===null)setHands(curH,curM,0);
 });
 </script>
-
-<!-- Portable single-file build: CSS and JavaScript are embedded; no network or service worker required. -->
+<script>
+// Service workers require HTTPS or localhost. The downloaded static files still
+// work locally without a service worker; this enables offline caching when hosted.
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js", { scope: "./" })
+      .catch((error) => console.warn("ZeitMeister offline cache could not be enabled:", error));
+  });
+}
+</script>
 </body>
 </html>

@@ -8,7 +8,8 @@ A static, browser-based trainer for learning how to tell time in German. No back
 - Localized the streak label in Arabic, English, and German.
 - Limited answer input to 120 characters to bound normalization work for pasted text.
 - Made service-worker cache-write failures non-fatal so a successful online response is still delivered when cache storage is unavailable or full.
-- Added light/dark theme-color metadata and aligned the manifest colors with the default light theme.
+- Added a top-right sun/moon theme toggle. ZeitMeister defaults to light mode independently of browser appearance and remembers the user’s selection on that device.
+- Added app-controlled theme-color metadata and aligned the manifest colors with the default light theme.
 
 ## Offline use
 
